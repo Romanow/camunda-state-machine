@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  exporter="Camunda Modeler" exporterVersion="5.5.1" id="Definitions_1cscubg"
+  targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Platform"
+  modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="WaitProcess" isExecutable="true" name="Wait Process" camunda:versionTag="1.0">
+    <bpmn:endEvent id="Event_13k4t4r" name="Finish Process">
+      <bpmn:incoming>Flow_1ccbf3k</bpmn:incoming>
+      <bpmn:incoming>Flow_0r1v7h6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_1mirelf" name="Ready">
+      <bpmn:incoming>Flow_13h5auc</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pwy9uu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1pj1wex</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0r1v7h6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_1lia7c0">
+      <bpmn:incoming>Flow_18m8xpe</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ccbf3k</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0eyhh4w</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_13h5auc" sourceRef="CheckRequestAction" targetRef="Gateway_1mirelf"/>
+    <bpmn:sequenceFlow id="Flow_1pwy9uu" sourceRef="Gateway_1mirelf" targetRef="LogRetryAction">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${processStatus == 'IN_PROGRESS'}
+      </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1vp31xo" sourceRef="StartEvent_1" targetRef="CheckRequestAction"/>
+    <bpmn:sequenceFlow id="Flow_1qvbvf7" sourceRef="LogRetryAction" targetRef="CheckRequestAction"/>
+    <bpmn:sequenceFlow id="Flow_1pj1wex" sourceRef="Gateway_1mirelf" targetRef="ApproveAction">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${processStatus == 'ERROR'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_18m8xpe" sourceRef="ApproveAction" targetRef="Gateway_1lia7c0"/>
+    <bpmn:sequenceFlow id="Flow_1ccbf3k" sourceRef="Gateway_1lia7c0" targetRef="Event_13k4t4r">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!approve_retry}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0eyhh4w" sourceRef="Gateway_1lia7c0" targetRef="LogRetryAction">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approve_retry}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0r1v7h6" sourceRef="Gateway_1mirelf" targetRef="Event_13k4t4r">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${processStatus == 'DONE'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="CheckRequestAction" name="Check Request" camunda:delegateExpression="#{CheckRequestAction}">
+      <bpmn:extensionElements/>
+      <bpmn:incoming>Flow_1vp31xo</bpmn:incoming>
+      <bpmn:incoming>Flow_1qvbvf7</bpmn:incoming>
+      <bpmn:outgoing>Flow_13h5auc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="LogRetryAction" name="Log Retry" camunda:delegateExpression="#{LogRetryAction}">
+      <bpmn:incoming>Flow_1pwy9uu</bpmn:incoming>
+      <bpmn:incoming>Flow_0eyhh4w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qvbvf7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1" name="Start Process">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="process_id" label="Process ID" type="long">
+            <camunda:validation/>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1vp31xo</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ApproveAction" name="Approve">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Approve Retry" label="approve_retry" type="boolean"/>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1pj1wex</bpmn:incoming>
+      <bpmn:outgoing>Flow_18m8xpe</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane bpmnElement="WaitProcess" id="BPMNPlane_1">
+      <bpmndi:BPMNEdge bpmnElement="Flow_1vp31xo" id="Flow_1vp31xo_di">
+        <di:waypoint x="215" y="227"/>
+        <di:waypoint x="320" y="227"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_13h5auc" id="Flow_13h5auc_di">
+        <di:waypoint x="420" y="227"/>
+        <di:waypoint x="535" y="227"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1pwy9uu" id="Flow_1pwy9uu_di">
+        <di:waypoint x="560" y="252"/>
+        <di:waypoint x="560" y="340"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1pj1wex" id="Flow_1pj1wex_di">
+        <di:waypoint x="585" y="227"/>
+        <di:waypoint x="700" y="227"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0r1v7h6" id="Flow_0r1v7h6_di">
+        <di:waypoint x="560" y="202"/>
+        <di:waypoint x="560" y="80"/>
+        <di:waypoint x="1050" y="80"/>
+        <di:waypoint x="1050" y="209"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1qvbvf7" id="Flow_1qvbvf7_di">
+        <di:waypoint x="510" y="380"/>
+        <di:waypoint x="370" y="380"/>
+        <di:waypoint x="370" y="267"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0eyhh4w" id="Flow_0eyhh4w_di">
+        <di:waypoint x="920" y="252"/>
+        <di:waypoint x="920" y="380"/>
+        <di:waypoint x="610" y="380"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_18m8xpe" id="Flow_18m8xpe_di">
+        <di:waypoint x="800" y="227"/>
+        <di:waypoint x="895" y="227"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1ccbf3k" id="Flow_1ccbf3k_di">
+        <di:waypoint x="945" y="227"/>
+        <di:waypoint x="1032" y="227"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="StartEvent_1" id="_BPMNShape_StartEvent_2">
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14" width="67" x="164" y="252"/>
+        </bpmndi:BPMNLabel>
+        <dc:Bounds height="36" width="36" x="179" y="209"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway_1mirelf" id="Gateway_1mirelf_di" isMarkerVisible="true">
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14" width="32" x="544" y="172"/>
+        </bpmndi:BPMNLabel>
+        <dc:Bounds height="50" width="50" x="535" y="202"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CheckRequestAction" id="Activity_1gy4yip_di">
+        <dc:Bounds height="80" width="100" x="320" y="187"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="LogRetryAction" id="Activity_1cliqd1_di">
+        <dc:Bounds height="80" width="100" x="510" y="340"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ApproveAction" id="Activity_0vqnwek_di">
+        <dc:Bounds height="80" width="100" x="700" y="187"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_13k4t4r" id="Event_13k4t4r_di">
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14" width="73" x="1013" y="255"/>
+        </bpmndi:BPMNLabel>
+        <dc:Bounds height="36" width="36" x="1032" y="209"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway_1lia7c0" id="Gateway_1lia7c0_di" isMarkerVisible="true">
+        <dc:Bounds height="50" width="50" x="895" y="202"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
