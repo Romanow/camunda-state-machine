@@ -17,6 +17,23 @@
 * [ ] Выделение общих функциональных блоков.
 * [ ] Параллелизация выполнения BPMN.
 
+## Установка и запуск
+
+Требуется:
+
+* OpenJDK 11
+* Docker
+* Postman
+
+```shell
+# сборка
+$ ./gradlew clean build
+# запуск PostgreSQL 15 в docker
+$ docker compose up -d
+# запуск приложения 
+$ ./gradlew bootRun
+```
+
 Админка доступна по
 адресу [http://localhost:8080/camunda/app/cockpit/default/#/](http://localhost:8080/camunda/app/cockpit/default/#/),
 пользователь `admin`:`admin`.

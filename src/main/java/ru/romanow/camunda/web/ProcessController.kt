@@ -48,12 +48,12 @@ class ProcessController(
     }
 
     fun approve(processInstanceId: String, taskType: String, params: Map<String, Any>) {
-        val task = processEngine
+        val tasks = processEngine
             .taskService.createTaskQuery()
             .processInstanceId(processInstanceId)
             .taskDefinitionKey(taskType)
-            .singleResult()
+            .list()
 
-        processEngine.taskService.complete(task.id, params)
+        tasks.forEach { processEngine.taskService.complete(it.id, params) }
     }
 }
