@@ -26,16 +26,25 @@ class ProcessController(
         approve(processInstanceId, "RetryApproveAction", mapOf("approveRetry" to true))
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/{processInstanceId}/approve/admin")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("/{processInstanceId}/approve/supervisor")
     fun adminApproval(@PathVariable processInstanceId: String) {
-        approve(processInstanceId, "AdminApprovalAction", mapOf("adminApprove" to true))
+        approve(processInstanceId, "SupervisorApprovalAction", mapOf("supervisorApprove" to true))
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/{processInstanceId}/approve/manager")
     fun managerApproval(@PathVariable processInstanceId: String) {
         approve(processInstanceId, "ManagerApprovalAction", mapOf("managerApprove" to true))
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("/{processInstanceId}/accept/{type}")
+    fun approvalEvent(@PathVariable processInstanceId: String, @PathVariable type: String) {
+        processEngine.runtimeService
+            .createMessageCorrelation("$type approve")
+            .processInstanceId(processInstanceId)
+            .correlate()
     }
 
     fun approve(processInstanceId: String, taskType: String, params: Map<String, Any>) {

@@ -47,7 +47,7 @@
       "response": []
     },
     {
-      "name": "Approve Retry",
+      "name": "Manager Retry Approve",
       "request": {
         "method": "POST",
         "header": [],
@@ -70,12 +70,12 @@
       "response": []
     },
     {
-      "name": "Admin Approval",
+      "name": "Supervisor Approval",
       "request": {
         "method": "POST",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/approve/admin",
+          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/approve/supervisor",
           "protocol": "http",
           "host": [
             "localhost"
@@ -86,19 +86,19 @@
             "v1",
             "{{processInstanceId}}",
             "approve",
-            "admin"
+            "supervisor"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "Manager Approval",
+      "name": "Manager Approv Event",
       "request": {
         "method": "POST",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/approve/manager",
+          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/accept/manager",
           "protocol": "http",
           "host": [
             "localhost"
@@ -108,8 +108,31 @@
             "api",
             "v1",
             "{{processInstanceId}}",
-            "approve",
+            "accept",
             "manager"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Head Approv Event",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/accept/head",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "{{processInstanceId}}",
+            "accept",
+            "head"
           ]
         }
       },
