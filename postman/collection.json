@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "d0d757ad-ae6c-4da2-b073-78d29daee28e",
+    "name": "[work] Camunda State Machine",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "976707"
+  },
+  "item": [
+    {
+      "name": "Start Process",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.text();",
+              "pm.collectionVariables.set(\"processInstanceId\", response)"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/{{processName}}/start?processId={{$randomInt}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "{{processName}}",
+            "start"
+          ],
+          "query": [
+            {
+              "key": "processId",
+              "value": "{{$randomInt}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Approve Retry",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/approve/retry",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "{{processInstanceId}}",
+            "approve",
+            "retry"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Admin Approval",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/approve/admin",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "{{processInstanceId}}",
+            "approve",
+            "admin"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Manager Approval",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/{{processInstanceId}}/approve/manager",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "{{processInstanceId}}",
+            "approve",
+            "manager"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "processInstanceId",
+      "value": ""
+    }
+  ]
+}

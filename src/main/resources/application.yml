@@ -4,14 +4,14 @@ spring:
   application:
     name: camunda-state-machone
   main.banner-mode: off
-  datasource:
-    password: test
-    driver-class-name: org.postgresql.Driver
-    username: program
-    url: jdbc:postgresql://localhost:5432/fsm
-  jpa:
-    hibernate.ddl-auto: update
-    open-in-view: false
+#  datasource:
+#    password: test
+#    driver-class-name: org.postgresql.Driver
+#    username: program
+#    url: jdbc:postgresql://localhost:5432/fsm
+#  jpa:
+#    hibernate.ddl-auto: update
+#    open-in-view: false
 
 management:
   health.diskspace.enabled: false
@@ -20,8 +20,10 @@ management:
     base-path: /manage
     exposure.include: info,health,loggers,prometheus
 
-camunda:
-  bpm:
-    admin-user:
-      id: test
-      password: test
+#camunda:
+#  bpm:
+#    admin-user:
+#      id: admin
+#      password: admin
+#    filter:
+#      create: All tasks
