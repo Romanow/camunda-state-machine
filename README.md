@@ -41,6 +41,15 @@ $ ./gradlew bootRun
 Для управления расчетом через REST API можно использовать [коллекцию](postman/collection.json) postman
 и [переменные](postman/environment.json).
 
+## Техническое описание
+
+When naming tasks, we try to adhere to the object-oriented design principle of using the `verb` + `object` pattern. We
+would say "acquire groceries," for example, not "first take care of shopping for groceries."
+
+Events refer to something that has already happened regardless of the process (if they are catching events) or as a
+result of the process (if they are throwing events). For this reason, we use the `object` and make the `verb` passive in
+voice, so we write "hunger noticed".
+
 ## Ссылки
 
 1. [Camunda User Guide](https://docs.camunda.org/manual/latest/user-guide/)
