@@ -5,9 +5,9 @@ import org.camunda.bpm.engine.delegate.JavaDelegate
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
-@Service("LogRetryAction")
-class LogRetryAction : JavaDelegate {
-    private val logger = LoggerFactory.getLogger(LogRetryAction::class.java)
+@Service("CopyDataToStagedAction")
+class CopyDataToStagedAction : JavaDelegate {
+    private val logger = LoggerFactory.getLogger(CopyDataToStagedAction::class.java)
 
     override fun execute(execution: DelegateExecution) {
         logger.info("{}", execution)

@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import ru.romanow.camunda.config.DatabaseTestConfiguration
 
 @SpringBootTest(classes = [DatabaseTestConfiguration::class])
-internal class CamundaStateMachineApplication {
+internal class CashFlowApplicationTest {
 
     @Test
     fun runApp() {

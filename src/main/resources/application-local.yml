@@ -1,0 +1,29 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: cashflow
+  main.banner-mode: off
+  datasource:
+    password: test
+    driver-class-name: org.postgresql.Driver
+    username: program
+    url: jdbc:postgresql://localhost:5432/cashflow
+  jpa:
+    hibernate.ddl-auto: update
+    open-in-view: false
+
+management:
+  health.diskspace.enabled: false
+  endpoint.health.show-details: always
+  endpoints.web:
+    base-path: /manage
+    exposure.include: info,health,loggers,prometheus
+
+camunda:
+  bpm:
+    admin-user:
+      id: admin
+      password: admin
+    filter:
+      create: All tasks

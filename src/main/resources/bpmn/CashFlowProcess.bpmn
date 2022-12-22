@@ -1,240 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1y0qeh8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
-  <bpmn:collaboration id="Collaboration_1y645jd">
-    <bpmn:participant id="Participant_1gly4cp" name="CASH FLOW CALCULATION PROCESS" processRef="Process_0norfu0" />
-  </bpmn:collaboration>
-  <bpmn:process id="Process_0norfu0" isExecutable="true">
-    <bpmn:laneSet id="LaneSet_105h7tq">
-      <bpmn:lane id="Lane_1dl3ony" name="DRP">
-        <bpmn:flowNodeRef>DrpEtlResultEvent</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpEtlAction</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpEtlStartEvent</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpCalculationAction</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpCalculationResultEvent</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpCalculationStartEvent</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpReverseEtlAction</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpReverseEtlStartEvent</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>DrpReverseEtlResultEvent</bpmn:flowNodeRef>
-      </bpmn:lane>
-      <bpmn:lane id="Lane_11ohhy2" name="CORE">
-        <bpmn:flowNodeRef>CashFlowCalculationStart</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CopyDataToStageAction</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CashFlowCalculationFinish</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CopyDataFromStageAction</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0ajj8m0</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0mpqpun</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_09n9ipm</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_01oxab1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CopyDataToStageActionError</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_0o83kdq</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1fvh29w</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1sxsik7</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CopyDataFromStageActionError</bpmn:flowNodeRef>
-      </bpmn:lane>
-    </bpmn:laneSet>
-    <bpmn:startEvent id="CashFlowCalculationStart" name="Cash Flow Calculation Start">
-      <bpmn:outgoing>Flow_1c1u91s</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:task id="CopyDataToStageAction" name="Copy Data to Stage&#10;(DATA_COPIED_TO_STAGE)">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_1c1u91s</bpmn:incoming>
-      <bpmn:outgoing>Flow_1c1u90s</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:intermediateThrowEvent id="DrpEtlResultEvent" name="ETL Result">
-      <bpmn:incoming>Flow_01t55al</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1k6els3" messageRef="Message_3rcd9pc" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:task id="DrpEtlAction" name="ETL Process">
-      <bpmn:incoming>Flow_0ct3iu2</bpmn:incoming>
-      <bpmn:outgoing>Flow_01t55al</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:intermediateCatchEvent id="DrpEtlStartEvent" name="ETL Start">
-      <bpmn:outgoing>Flow_0ct3iu2</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1fml014" messageRef="Message_3ustjfu" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:subProcess id="Activity_0ajj8m0" name="ETL Process">
-      <bpmn:incoming>Flow_1c1u90s</bpmn:incoming>
-      <bpmn:outgoing>Flow_1cx1wbu</bpmn:outgoing>
-      <bpmn:startEvent id="StartEtlProcess" name="Start ETL Process">
-        <bpmn:outgoing>Flow_1ts29m7</bpmn:outgoing>
-      </bpmn:startEvent>
-      <bpmn:task id="StartEtlAction" name="Start ETL Process (ETL_STARTED)">
-        <bpmn:incoming>Flow_1ts29m7</bpmn:incoming>
-        <bpmn:outgoing>Flow_1qbkigr</bpmn:outgoing>
-      </bpmn:task>
-      <bpmn:sequenceFlow id="Flow_1ts29m7" sourceRef="StartEtlProcess" targetRef="StartEtlAction" />
-      <bpmn:endEvent id="FinishEtlProcess" name="Finish ETL Process">
-        <bpmn:incoming>Flow_1o8th8f</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:endEvent id="EtlError" name="Etl Error">
-        <bpmn:incoming>Flow_1nppntk</bpmn:incoming>
-        <bpmn:incoming>Flow_0ybps21</bpmn:incoming>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0xxjmco" errorRef="GlobalError" />
-      </bpmn:endEvent>
-      <bpmn:boundaryEvent id="StartEtlActionError" attachedToRef="StartEtlAction">
-        <bpmn:outgoing>Flow_1nppntk</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_1g21buj" errorRef="GlobalError" />
-      </bpmn:boundaryEvent>
-      <bpmn:boundaryEvent id="EtlCompletedActionError" attachedToRef="EtlCompletedAction">
-        <bpmn:outgoing>Flow_0ybps21</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0e84rv2" errorRef="GlobalError" />
-      </bpmn:boundaryEvent>
-      <bpmn:sequenceFlow id="Flow_1nppntk" sourceRef="StartEtlActionError" targetRef="EtlError" />
-      <bpmn:sequenceFlow id="Flow_0ybps21" sourceRef="EtlCompletedActionError" targetRef="EtlError" />
-      <bpmn:sequenceFlow id="Flow_1qbkigr" sourceRef="StartEtlAction" targetRef="EtlCompletedAction" />
-      <bpmn:receiveTask id="EtlCompletedAction" name="ETL Process Completed (ETL_COMPLETED)" messageRef="Message_3rcd9pc">
-        <bpmn:incoming>Flow_1qbkigr</bpmn:incoming>
-        <bpmn:outgoing>Flow_1o8th8f</bpmn:outgoing>
-      </bpmn:receiveTask>
-      <bpmn:sequenceFlow id="Flow_1o8th8f" sourceRef="EtlCompletedAction" targetRef="FinishEtlProcess" />
-    </bpmn:subProcess>
-    <bpmn:boundaryEvent id="CopyDataToStageActionError" attachedToRef="CopyDataToStageAction">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_13ebi0q" errorRef="GlobalError" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_1c1u91s" sourceRef="CashFlowCalculationStart" targetRef="CopyDataToStageAction" />
-    <bpmn:sequenceFlow id="Flow_1c1u90s" sourceRef="CopyDataToStageAction" targetRef="Activity_0ajj8m0" />
-    <bpmn:sequenceFlow id="Flow_01t55al" sourceRef="DrpEtlAction" targetRef="DrpEtlResultEvent" />
-    <bpmn:sequenceFlow id="Flow_0ct3iu2" sourceRef="DrpEtlStartEvent" targetRef="DrpEtlAction" />
-    <bpmn:sequenceFlow id="Flow_0dthxym" sourceRef="CopyDataFromStageAction" targetRef="CashFlowCalculationFinish" />
-    <bpmn:sequenceFlow id="Flow_1ht9l6v" sourceRef="DrpReverseEtlStartEvent" targetRef="DrpReverseEtlAction" />
-    <bpmn:sequenceFlow id="Flow_0op0uro" sourceRef="DrpReverseEtlAction" targetRef="DrpReverseEtlResultEvent" />
-    <bpmn:sequenceFlow id="Flow_1wytr45" sourceRef="DrpCalculationStartEvent" targetRef="DrpCalculationAction" />
-    <bpmn:sequenceFlow id="Flow_0eth7mq" sourceRef="DrpCalculationAction" targetRef="DrpCalculationResultEvent" />
-    <bpmn:sequenceFlow id="Flow_0pfqfcx" sourceRef="Activity_09n9ipm" targetRef="CopyDataFromStageAction" />
-    <bpmn:sequenceFlow id="Flow_1cx1wbu" sourceRef="Activity_0ajj8m0" targetRef="Activity_0mpqpun" />
-    <bpmn:sequenceFlow id="Flow_1gixxig" sourceRef="Activity_0mpqpun" targetRef="Activity_09n9ipm" />
-    <bpmn:task id="DrpCalculationAction" name="Calculation">
-      <bpmn:incoming>Flow_1wytr45</bpmn:incoming>
-      <bpmn:outgoing>Flow_0eth7mq</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:intermediateThrowEvent id="DrpCalculationResultEvent" name="Calculation Result">
-      <bpmn:incoming>Flow_0eth7mq</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1cuh0bc" messageRef="Message_09588ep" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateCatchEvent id="DrpCalculationStartEvent" name="Calculation Start">
-      <bpmn:outgoing>Flow_1wytr45</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1yuplih" messageRef="Message_0k3fs4v" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:task id="DrpReverseEtlAction" name="Reverse ETL Process">
-      <bpmn:incoming>Flow_1ht9l6v</bpmn:incoming>
-      <bpmn:outgoing>Flow_0op0uro</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:intermediateCatchEvent id="DrpReverseEtlStartEvent" name="Reverse ETL Start">
-      <bpmn:outgoing>Flow_1ht9l6v</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1dcrl1n" messageRef="Message_2oro2k3" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:intermediateThrowEvent id="DrpReverseEtlResultEvent" name="Reverse ETL Result">
-      <bpmn:incoming>Flow_0op0uro</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_02ryl8q" messageRef="Message_2hcng75" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:endEvent id="CashFlowCalculationFinish" name="Cash Flow Calculation Finish">
-      <bpmn:incoming>Flow_0dthxym</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:task id="CopyDataFromStageAction" name="Copy Data from Stage (DATA_COPIED_FROM_STAGE)">
-      <bpmn:incoming>Flow_0pfqfcx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0dthxym</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:subProcess id="Activity_0mpqpun" name="Calculation Process">
-      <bpmn:incoming>Flow_1cx1wbu</bpmn:incoming>
-      <bpmn:outgoing>Flow_1gixxig</bpmn:outgoing>
-      <bpmn:startEvent id="StartCalculationProcess" name="Start Calculation Process">
-        <bpmn:outgoing>Flow_0g794wz</bpmn:outgoing>
-      </bpmn:startEvent>
-      <bpmn:task id="CalculationStartedAction" name="Start Calculation (CALCULATION_STARTED)">
-        <bpmn:incoming>Flow_0g794wz</bpmn:incoming>
-        <bpmn:outgoing>Flow_0tlbs1n</bpmn:outgoing>
-      </bpmn:task>
-      <bpmn:sequenceFlow id="Flow_0g794wz" sourceRef="StartCalculationProcess" targetRef="CalculationStartedAction" />
-      <bpmn:sequenceFlow id="Flow_0tlbs1n" sourceRef="CalculationStartedAction" targetRef="CalculationCompletedAction" />
-      <bpmn:endEvent id="FinishCalculationProcess">
-        <bpmn:incoming>Flow_0yacezy</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:boundaryEvent id="CalculationStartedActionError" attachedToRef="CalculationStartedAction">
-        <bpmn:outgoing>Flow_0vxmvdl</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_1t5d2o2" errorRef="GlobalError" />
-      </bpmn:boundaryEvent>
-      <bpmn:boundaryEvent id="Event_00k7nhz" attachedToRef="CalculationCompletedAction">
-        <bpmn:outgoing>Flow_1nqv07h</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_1p2mhw7" errorRef="GlobalError" />
-      </bpmn:boundaryEvent>
-      <bpmn:endEvent id="CalculationError">
-        <bpmn:incoming>Flow_0vxmvdl</bpmn:incoming>
-        <bpmn:incoming>Flow_1nqv07h</bpmn:incoming>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0x3xeuc" errorRef="GlobalError" />
-      </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0vxmvdl" sourceRef="CalculationStartedActionError" targetRef="CalculationError" />
-      <bpmn:sequenceFlow id="Flow_1nqv07h" sourceRef="Event_00k7nhz" targetRef="CalculationError" />
-      <bpmn:receiveTask id="CalculationCompletedAction" name="Calculation Completed (CALCULATION_COMPLETED)" messageRef="Message_09588ep">
-        <bpmn:incoming>Flow_0tlbs1n</bpmn:incoming>
-        <bpmn:outgoing>Flow_0yacezy</bpmn:outgoing>
-      </bpmn:receiveTask>
-      <bpmn:sequenceFlow id="Flow_0yacezy" sourceRef="CalculationCompletedAction" targetRef="FinishCalculationProcess" />
-    </bpmn:subProcess>
-    <bpmn:subProcess id="Activity_09n9ipm" name="Reverse ETL Process">
-      <bpmn:incoming>Flow_1gixxig</bpmn:incoming>
-      <bpmn:outgoing>Flow_0pfqfcx</bpmn:outgoing>
-      <bpmn:endEvent id="FinishReverseEtlProcess" name="Finish Reverse ETL Process">
-        <bpmn:incoming>Flow_0br3eaw</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:startEvent id="StartReverseEtlProcess" name="Start Reverse ETL Process">
-        <bpmn:outgoing>Flow_1a14uyh</bpmn:outgoing>
-      </bpmn:startEvent>
-      <bpmn:task id="StartReverseEtlAction" name="Start Reverse ETL Process (REVERSE_ETL_STARTED)">
-        <bpmn:incoming>Flow_1a14uyh</bpmn:incoming>
-        <bpmn:outgoing>Flow_0idwqz5</bpmn:outgoing>
-      </bpmn:task>
-      <bpmn:receiveTask id="ReverseEtlCompletedAction" name="Reverse ETL Process Completed (REVERSE_ETL_COMPLETED)" messageRef="Message_2hcng75">
-        <bpmn:incoming>Flow_0idwqz5</bpmn:incoming>
-        <bpmn:outgoing>Flow_0br3eaw</bpmn:outgoing>
-      </bpmn:receiveTask>
-      <bpmn:sequenceFlow id="Flow_1a14uyh" sourceRef="StartReverseEtlProcess" targetRef="StartReverseEtlAction" />
-      <bpmn:sequenceFlow id="Flow_0idwqz5" sourceRef="StartReverseEtlAction" targetRef="ReverseEtlCompletedAction" />
-      <bpmn:endEvent id="ReverseEtlError">
-        <bpmn:incoming>Flow_0725ivr</bpmn:incoming>
-        <bpmn:incoming>Flow_0zq5jib</bpmn:incoming>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0cszja2" errorRef="GlobalError" />
-      </bpmn:endEvent>
-      <bpmn:boundaryEvent id="StartReverseEtlActionError" attachedToRef="StartReverseEtlAction">
-        <bpmn:outgoing>Flow_0zq5jib</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0uvah64" errorRef="GlobalError" />
-      </bpmn:boundaryEvent>
-      <bpmn:boundaryEvent id="ReverseEtlCompletedActionError" attachedToRef="ReverseEtlCompletedAction">
-        <bpmn:outgoing>Flow_0725ivr</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0k4y010" errorRef="GlobalError" />
-      </bpmn:boundaryEvent>
-      <bpmn:sequenceFlow id="Flow_0725ivr" sourceRef="ReverseEtlCompletedActionError" targetRef="ReverseEtlError" />
-      <bpmn:sequenceFlow id="Flow_0zq5jib" sourceRef="StartReverseEtlActionError" targetRef="ReverseEtlError" />
-      <bpmn:sequenceFlow id="Flow_0br3eaw" sourceRef="ReverseEtlCompletedAction" targetRef="FinishReverseEtlProcess" />
-    </bpmn:subProcess>
-    <bpmn:subProcess id="Activity_01oxab1" triggeredByEvent="true">
-      <bpmn:endEvent id="CashFlowCalculationError" name="Calculation Error">
-        <bpmn:incoming>Flow_1w0gz4a</bpmn:incoming>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_15617qp" errorRef="GlobalError" />
-      </bpmn:endEvent>
-      <bpmn:task id="ErrorAction" name="Process Error (CALCULATION_ERROR)">
-        <bpmn:incoming>Flow_1uv4s6v</bpmn:incoming>
-        <bpmn:outgoing>Flow_1w0gz4a</bpmn:outgoing>
-      </bpmn:task>
-      <bpmn:startEvent id="ErrorEvent" name="Error">
-        <bpmn:outgoing>Flow_1uv4s6v</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0rv4h5w" errorRef="GlobalError" />
-      </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_1w0gz4a" sourceRef="ErrorAction" targetRef="CashFlowCalculationError" />
-      <bpmn:sequenceFlow id="Flow_1uv4s6v" sourceRef="ErrorEvent" targetRef="ErrorAction" />
-    </bpmn:subProcess>
-    <bpmn:boundaryEvent id="Event_0o83kdq" attachedToRef="Activity_0ajj8m0">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1xp6h3y" errorRef="GlobalError" />
-    </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="Event_1fvh29w" attachedToRef="Activity_0mpqpun">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0hhzcsk" errorRef="GlobalError" />
-    </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="Event_1sxsik7" attachedToRef="Activity_09n9ipm">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0jwqkv6" errorRef="GlobalError" />
-    </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="CopyDataFromStageActionError" attachedToRef="CopyDataFromStageAction">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_19fsyxy" errorRef="GlobalError" />
-    </bpmn:boundaryEvent>
-  </bpmn:process>
   <bpmn:message id="Message_3rcd9pc" name="etl result event" />
   <bpmn:message id="Message_09588ep" name="calculation result event" />
   <bpmn:message id="Message_0d4gn57" name="error event" />
@@ -243,18 +8,176 @@
   <bpmn:message id="Message_0k3fs4v" name="calculation start event" />
   <bpmn:message id="Message_2oro2k3" name="reverse etl start" />
   <bpmn:error id="GlobalError" name="calculation error" errorCode="calculation error" />
+  <bpmn:collaboration id="Collaboration_1y645jd">
+    <bpmn:participant id="Participant_1gly4cp" name="CASH FLOW CALCULATION PROCESS" processRef="Process_0norfu0" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_0norfu0" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_105h7tq" />
+    <bpmn:subProcess id="Activity_01oxab1" triggeredByEvent="true">
+      <bpmn:startEvent id="ErrorEvent" name="Error">
+        <bpmn:outgoing>Flow_1uv4s6v</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0rv4h5w" errorRef="GlobalError" />
+      </bpmn:startEvent>
+      <bpmn:task id="ErrorAction" name="Process Error">
+        <bpmn:incoming>Flow_1uv4s6v</bpmn:incoming>
+        <bpmn:outgoing>Flow_1w0gz4a</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="Flow_1uv4s6v" sourceRef="ErrorEvent" targetRef="ErrorAction" />
+      <bpmn:endEvent id="CashFlowCalculationError" name="Calculation Error">
+        <bpmn:incoming>Flow_1w0gz4a</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_15617qp" errorRef="GlobalError" />
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1w0gz4a" sourceRef="ErrorAction" targetRef="CashFlowCalculationError" />
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Activity_09n9ipm" name="Reverse ETL Process">
+      <bpmn:incoming>Flow_1gixxig</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pfqfcx</bpmn:outgoing>
+      <bpmn:endEvent id="ReverseEtlError">
+        <bpmn:incoming>Flow_0725ivr</bpmn:incoming>
+        <bpmn:incoming>Flow_0zq5jib</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0cszja2" errorRef="GlobalError" />
+      </bpmn:endEvent>
+      <bpmn:receiveTask id="ReverseEtlCompletedAction" name="Reverse ETL Process Completed" messageRef="Message_2hcng75">
+        <bpmn:incoming>Flow_0idwqz5</bpmn:incoming>
+        <bpmn:outgoing>Flow_0br3eaw</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:boundaryEvent id="ReverseEtlCompletedActionError" attachedToRef="ReverseEtlCompletedAction">
+        <bpmn:outgoing>Flow_0725ivr</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0k4y010" errorRef="GlobalError" />
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="Flow_0725ivr" sourceRef="ReverseEtlCompletedActionError" targetRef="ReverseEtlError" />
+      <bpmn:task id="StartReverseEtlAction" name="Start Reverse ETL Process">
+        <bpmn:incoming>Flow_1a14uyh</bpmn:incoming>
+        <bpmn:outgoing>Flow_0idwqz5</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="Flow_0idwqz5" sourceRef="StartReverseEtlAction" targetRef="ReverseEtlCompletedAction" />
+      <bpmn:boundaryEvent id="StartReverseEtlActionError" attachedToRef="StartReverseEtlAction">
+        <bpmn:outgoing>Flow_0zq5jib</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0uvah64" errorRef="GlobalError" />
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="Flow_0zq5jib" sourceRef="StartReverseEtlActionError" targetRef="ReverseEtlError" />
+      <bpmn:startEvent id="StartReverseEtlProcess" name="Start Reverse ETL Process">
+        <bpmn:outgoing>Flow_1a14uyh</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1a14uyh" sourceRef="StartReverseEtlProcess" targetRef="StartReverseEtlAction" />
+      <bpmn:endEvent id="FinishReverseEtlProcess" name="Finish Reverse ETL Process">
+        <bpmn:incoming>Flow_0br3eaw</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0br3eaw" sourceRef="ReverseEtlCompletedAction" targetRef="FinishReverseEtlProcess" />
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="Event_1sxsik7" attachedToRef="Activity_09n9ipm">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0jwqkv6" errorRef="GlobalError" />
+    </bpmn:boundaryEvent>
+    <bpmn:subProcess id="Activity_0mpqpun" name="Calculation Process">
+      <bpmn:incoming>Flow_1cx1wbu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gixxig</bpmn:outgoing>
+      <bpmn:receiveTask id="CalculationCompletedAction" name="Calculation Completed" messageRef="Message_09588ep">
+        <bpmn:incoming>Flow_0tlbs1n</bpmn:incoming>
+        <bpmn:outgoing>Flow_0yacezy</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:boundaryEvent id="Event_00k7nhz" attachedToRef="CalculationCompletedAction">
+        <bpmn:outgoing>Flow_1nqv07h</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_1p2mhw7" errorRef="GlobalError" />
+      </bpmn:boundaryEvent>
+      <bpmn:endEvent id="CalculationError">
+        <bpmn:incoming>Flow_1nqv07h</bpmn:incoming>
+        <bpmn:incoming>Flow_0vxmvdl</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0x3xeuc" errorRef="GlobalError" />
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1nqv07h" sourceRef="Event_00k7nhz" targetRef="CalculationError" />
+      <bpmn:endEvent id="FinishCalculationProcess">
+        <bpmn:incoming>Flow_0yacezy</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0yacezy" sourceRef="CalculationCompletedAction" targetRef="FinishCalculationProcess" />
+      <bpmn:task id="CalculationStartedAction" name="Start Calculation">
+        <bpmn:incoming>Flow_0g794wz</bpmn:incoming>
+        <bpmn:outgoing>Flow_0tlbs1n</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="Flow_0tlbs1n" sourceRef="CalculationStartedAction" targetRef="CalculationCompletedAction" />
+      <bpmn:boundaryEvent id="CalculationStartedActionError" attachedToRef="CalculationStartedAction">
+        <bpmn:outgoing>Flow_0vxmvdl</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_1t5d2o2" errorRef="GlobalError" />
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="Flow_0vxmvdl" sourceRef="CalculationStartedActionError" targetRef="CalculationError" />
+      <bpmn:startEvent id="StartCalculationProcess" name="Start Calculation Process">
+        <bpmn:outgoing>Flow_0g794wz</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0g794wz" sourceRef="StartCalculationProcess" targetRef="CalculationStartedAction" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_1gixxig" sourceRef="Activity_0mpqpun" targetRef="Activity_09n9ipm" />
+    <bpmn:boundaryEvent id="Event_1fvh29w" attachedToRef="Activity_0mpqpun">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0hhzcsk" errorRef="GlobalError" />
+    </bpmn:boundaryEvent>
+    <bpmn:task id="CopyDataFromStageAction" name="Copy Data from Stage">
+      <bpmn:incoming>Flow_0pfqfcx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dthxym</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0pfqfcx" sourceRef="Activity_09n9ipm" targetRef="CopyDataFromStageAction" />
+    <bpmn:boundaryEvent id="CopyDataFromStageActionError" attachedToRef="CopyDataFromStageAction">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_19fsyxy" errorRef="GlobalError" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="CashFlowCalculationFinish" name="Cash Flow Calculation Finish">
+      <bpmn:incoming>Flow_0dthxym</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0dthxym" sourceRef="CopyDataFromStageAction" targetRef="CashFlowCalculationFinish" />
+    <bpmn:subProcess id="Activity_0ajj8m0" name="ETL Process">
+      <bpmn:incoming>Flow_1c1u90s</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cx1wbu</bpmn:outgoing>
+      <bpmn:receiveTask id="EtlCompletedAction" name="ETL Process Completed" messageRef="Message_3rcd9pc">
+        <bpmn:incoming>Flow_1qbkigr</bpmn:incoming>
+        <bpmn:outgoing>Flow_1o8th8f</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:boundaryEvent id="EtlCompletedActionError" attachedToRef="EtlCompletedAction">
+        <bpmn:outgoing>Flow_0ybps21</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0e84rv2" errorRef="GlobalError" />
+      </bpmn:boundaryEvent>
+      <bpmn:endEvent id="EtlError">
+        <bpmn:incoming>Flow_0ybps21</bpmn:incoming>
+        <bpmn:incoming>Flow_1nppntk</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0xxjmco" errorRef="GlobalError" />
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0ybps21" sourceRef="EtlCompletedActionError" targetRef="EtlError" />
+      <bpmn:endEvent id="FinishEtlProcess" name="Finish ETL Process">
+        <bpmn:incoming>Flow_1o8th8f</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1o8th8f" sourceRef="EtlCompletedAction" targetRef="FinishEtlProcess" />
+      <bpmn:task id="StartEtlAction" name="Start ETL Process">
+        <bpmn:incoming>Flow_1ts29m7</bpmn:incoming>
+        <bpmn:outgoing>Flow_1qbkigr</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="Flow_1qbkigr" sourceRef="StartEtlAction" targetRef="EtlCompletedAction" />
+      <bpmn:boundaryEvent id="StartEtlActionError" attachedToRef="StartEtlAction">
+        <bpmn:outgoing>Flow_1nppntk</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_1g21buj" errorRef="GlobalError" />
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="Flow_1nppntk" sourceRef="StartEtlActionError" targetRef="EtlError" />
+      <bpmn:startEvent id="StartEtlProcess" name="Start ETL Process">
+        <bpmn:outgoing>Flow_1ts29m7</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1ts29m7" sourceRef="StartEtlProcess" targetRef="StartEtlAction" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_1cx1wbu" sourceRef="Activity_0ajj8m0" targetRef="Activity_0mpqpun" />
+    <bpmn:boundaryEvent id="Event_0o83kdq" attachedToRef="Activity_0ajj8m0">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1xp6h3y" errorRef="GlobalError" />
+    </bpmn:boundaryEvent>
+    <bpmn:task id="CopyDataToStageAction" name="Copy Data to Stage">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1c1u91s</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c1u90s</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1c1u90s" sourceRef="CopyDataToStageAction" targetRef="Activity_0ajj8m0" />
+    <bpmn:boundaryEvent id="CopyDataToStageActionError" attachedToRef="CopyDataToStageAction">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_13ebi0q" errorRef="GlobalError" />
+    </bpmn:boundaryEvent>
+    <bpmn:startEvent id="CashFlowCalculationStart" name="Cash Flow Calculation Start">
+      <bpmn:outgoing>Flow_1c1u91s</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1c1u91s" sourceRef="CashFlowCalculationStart" targetRef="CopyDataToStageAction" />
+  </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1y645jd">
       <bpmndi:BPMNShape id="Participant_1gly4cp_di" bpmnElement="Participant_1gly4cp" isHorizontal="true">
-        <dc:Bounds x="129" y="80" width="2551" height="765" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_11ohhy2_di" bpmnElement="Lane_11ohhy2" isHorizontal="true">
-        <dc:Bounds x="159" y="80" width="2521" height="595" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_1dl3ony_di" bpmnElement="Lane_1dl3ony" isHorizontal="true">
-        <dc:Bounds x="159" y="675" width="2521" height="170" />
+        <dc:Bounds x="129" y="80" width="2551" height="580" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="CashFlowCalculationStart">
@@ -265,64 +188,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1ryrs5y_di" bpmnElement="CopyDataToStageAction">
         <dc:Bounds x="300" y="465" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_00s3f87_di" bpmnElement="DrpEtlResultEvent">
-        <dc:Bounds x="902" y="737" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="893" y="780" width="55" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1tcq81t_di" bpmnElement="DrpEtlAction">
-        <dc:Bounds x="740" y="715" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1dyf7li_di" bpmnElement="DrpEtlStartEvent">
-        <dc:Bounds x="632" y="737" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="628" y="780" width="47" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1p8i0dc" bpmnElement="DrpCalculationAction">
-        <dc:Bounds x="1440" y="715" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1laogh6_di" bpmnElement="DrpCalculationResultEvent">
-        <dc:Bounds x="1632" y="737" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1607" y="780" width="89" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ggpfsf" bpmnElement="DrpCalculationStartEvent">
-        <dc:Bounds x="1332" y="737" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1310" y="780" width="81" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1umxcsj" bpmnElement="DrpReverseEtlAction">
-        <dc:Bounds x="2030" y="715" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0jfg6fi" bpmnElement="DrpReverseEtlStartEvent">
-        <dc:Bounds x="1902" y="737" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1888" y="780" width="65" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1xndgpb_di" bpmnElement="DrpReverseEtlResultEvent">
-        <dc:Bounds x="2212" y="737" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2200" y="780" width="65" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1d89t9t_di" bpmnElement="CashFlowCalculationFinish">
-        <dc:Bounds x="2592" y="487" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2568" y="530" width="87" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0nfmpaq_di" bpmnElement="CopyDataFromStageAction">
-        <dc:Bounds x="2390" y="465" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ajj8m0_di" bpmnElement="Activity_0ajj8m0" isExpanded="true">
@@ -339,9 +204,6 @@
         <dc:Bounds x="580" y="465" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wd4bng_di" bpmnElement="EtlCompletedAction">
-        <dc:Bounds x="750" y="465" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_10maen0_di" bpmnElement="FinishEtlProcess">
         <dc:Bounds x="932" y="487" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -351,8 +213,12 @@
       <bpmndi:BPMNShape id="Event_1pdxzn8_di" bpmnElement="EtlError">
         <dc:Bounds x="932" y="357" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="970.5" y="358" width="41" height="14" />
+          <dc:Bounds x="971" y="358" width="41" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wd4bng_di" bpmnElement="EtlCompletedAction">
+        <dc:Bounds x="750" y="465" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0xllhr4_di" bpmnElement="EtlCompletedActionError">
         <dc:Bounds x="832" y="447" width="36" height="36" />
@@ -383,6 +249,16 @@
         <di:waypoint x="850" y="505" />
         <di:waypoint x="932" y="505" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1d89t9t_di" bpmnElement="CashFlowCalculationFinish">
+        <dc:Bounds x="2592" y="487" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2568" y="530" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nfmpaq_di" bpmnElement="CopyDataFromStageAction">
+        <dc:Bounds x="2390" y="465" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0mpqpun_di" bpmnElement="Activity_0mpqpun" isExpanded="true">
         <dc:Bounds x="1130" y="335" width="570" height="270" />
         <bpmndi:BPMNLabel />
@@ -397,10 +273,6 @@
         <dc:Bounds x="1280" y="465" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_155qd9y_di" bpmnElement="CalculationCompletedAction">
-        <dc:Bounds x="1450" y="465" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_12aikpf_di" bpmnElement="FinishCalculationProcess">
         <dc:Bounds x="1632" y="487" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -409,6 +281,10 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1728.5" y="358" width="83" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_155qd9y_di" bpmnElement="CalculationCompletedAction">
+        <dc:Bounds x="1450" y="465" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_087a9ap_di" bpmnElement="Event_00k7nhz">
         <dc:Bounds x="1532" y="447" width="36" height="36" />
@@ -443,6 +319,12 @@
         <dc:Bounds x="1800" y="335" width="550" height="280" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_097i6cl" bpmnElement="FinishReverseEtlProcess">
+        <dc:Bounds x="2262" y="497" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2244" y="540" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0mptomm" bpmnElement="StartReverseEtlProcess">
         <dc:Bounds x="1832" y="497" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -456,12 +338,6 @@
       <bpmndi:BPMNShape id="BPMNShape_0028avq" bpmnElement="ReverseEtlCompletedAction">
         <dc:Bounds x="2090" y="475" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_097i6cl" bpmnElement="FinishReverseEtlProcess">
-        <dc:Bounds x="2262" y="497" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2244" y="540" width="74" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1k3vyk0_di" bpmnElement="ReverseEtlError">
         <dc:Bounds x="2262" y="357" width="36" height="36" />
@@ -525,20 +401,20 @@
         <di:waypoint x="2318" y="210" />
         <di:waypoint x="2390" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1xflp8g_di" bpmnElement="CopyDataToStageActionError">
-        <dc:Bounds x="382" y="447" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0c5ifz4_di" bpmnElement="Event_0o83kdq">
-        <dc:Bounds x="982" y="317" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_17rsg4r_di" bpmnElement="Event_1fvh29w">
-        <dc:Bounds x="1682" y="317" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0ptw7wv_di" bpmnElement="CopyDataFromStageActionError">
+        <dc:Bounds x="2472" y="447" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0wsqr6r_di" bpmnElement="Event_1sxsik7">
         <dc:Bounds x="2332" y="317" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ptw7wv_di" bpmnElement="CopyDataFromStageActionError">
-        <dc:Bounds x="2472" y="447" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_17rsg4r_di" bpmnElement="Event_1fvh29w">
+        <dc:Bounds x="1682" y="317" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0c5ifz4_di" bpmnElement="Event_0o83kdq">
+        <dc:Bounds x="982" y="317" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xflp8g_di" bpmnElement="CopyDataToStageActionError">
+        <dc:Bounds x="382" y="447" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1upi3b7_di" bpmnElement="Flow_1c1u91s">
         <di:waypoint x="238" y="505" />
@@ -551,33 +427,9 @@
         <di:waypoint x="400" y="505" />
         <di:waypoint x="460" y="505" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01t55al_di" bpmnElement="Flow_01t55al">
-        <di:waypoint x="840" y="755" />
-        <di:waypoint x="902" y="755" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ct3iu2_di" bpmnElement="Flow_0ct3iu2">
-        <di:waypoint x="668" y="755" />
-        <di:waypoint x="740" y="755" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0dthxym_di" bpmnElement="Flow_0dthxym">
         <di:waypoint x="2490" y="505" />
         <di:waypoint x="2592" y="505" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ht9l6v_di" bpmnElement="Flow_1ht9l6v">
-        <di:waypoint x="1938" y="755" />
-        <di:waypoint x="2030" y="755" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0op0uro_di" bpmnElement="Flow_0op0uro">
-        <di:waypoint x="2130" y="755" />
-        <di:waypoint x="2212" y="755" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1wytr45_di" bpmnElement="Flow_1wytr45">
-        <di:waypoint x="1368" y="755" />
-        <di:waypoint x="1440" y="755" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0eth7mq_di" bpmnElement="Flow_0eth7mq">
-        <di:waypoint x="1540" y="755" />
-        <di:waypoint x="1632" y="755" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0pfqfcx_di" bpmnElement="Flow_0pfqfcx">
         <di:waypoint x="2350" y="505" />

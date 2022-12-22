@@ -1,24 +1,32 @@
 server:
   port: 8080
+
 spring:
+  profiles:
+    active: local
   application:
-    name: camunda-state-machone
+    name: cashflow
   main.banner-mode: off
-  datasource:
-    password: test
-    driver-class-name: org.postgresql.Driver
-    username: program
-    url: jdbc:postgresql://localhost:5432/fsm
-  jpa:
-    hibernate.ddl-auto: update
-    open-in-view: false
 
 management:
+  endpoint:
+    health.probes.enabled: true
+  endpoints:
+    web:
+      base-path: /manage
+      exposure.include: info,health,loggers
   health.diskspace.enabled: false
   endpoint.health.show-details: always
-  endpoints.web:
-    base-path: /manage
-    exposure.include: info,health,loggers,prometheus
+  info.git.mode: simple
+  health:
+    readinessstate.enabled: true
+    livenessstate.enabled: true
+
+springdoc:
+  api-docs.path: /api-docs
+  paths-to-match: /api/**
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
 
 camunda:
   bpm:

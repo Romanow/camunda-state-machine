@@ -4,6 +4,7 @@ plugins {
     id "org.jetbrains.kotlin.plugin.spring" version "1.7.10"
     id "org.springframework.boot" version "2.7.4"
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id "com.gorylenko.gradle-git-properties" version "2.4.1"
 }
 
 idea {
@@ -15,6 +16,7 @@ idea {
 
 ext {
     camundaVersion = "7.15.0"
+    openApiVersion = "1.6.14"
     testCntainerVersion = "1.16.0"
 }
 
@@ -35,6 +37,10 @@ dependencies {
 
     implementation "org.postgresql:postgresql"
 
+    implementation "io.micrometer:micrometer-registry-prometheus"
+    implementation "org.springdoc:springdoc-openapi-ui:$openApiVersion"
+    implementation "org.springdoc:springdoc-openapi-kotlin:$openApiVersion"
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
@@ -47,6 +53,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+springBoot {
+    buildInfo()
 }
 
 bootJar {
