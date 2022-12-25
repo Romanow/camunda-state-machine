@@ -35,3 +35,8 @@ camunda:
       password: admin
     filter:
       create: All tasks
+
+services:
+  macro-scenario-url: ${MACRO_SCENARIO_URL:}
+  transfer-rate-url: ${TRANSFER_RATE_URL:}
+  product-scenario-url: ${PRODUCT_SCENARIO_URL:}

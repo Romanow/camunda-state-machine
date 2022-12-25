@@ -11,6 +11,7 @@ data class CalculationResponse(
     val description: String? = null,
     val type: CalculationType? = null,
     val status: CalculationStatus? = null,
+    val periods: List<PeriodResponse>? = null,
     val createdDate: LocalDateTime? = null,
     val modifiedDate: LocalDateTime? = null,
 )

@@ -6,4 +6,6 @@ data class CreateCalculationRequest(
     @field:NotEmpty
     val name: String? = null,
     val description: String? = null,
+    @field:NotEmpty
+    val periods: List<PeriodRequest>? = null,
 )

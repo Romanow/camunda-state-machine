@@ -13,25 +13,25 @@ data class CalculationStatus(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    var id: Long? = null,
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private val status: Status? = null,
+    var status: Status? = null,
 
     @Column(name = "operation_uid")
-    private val operationUid: String? = null,
+    var operationUid: String? = null,
 
     @Column(name = "calculation_id", updatable = false, insertable = false)
-    private val calculationId: Long? = null,
+    var calculationId: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "calculation_id", foreignKey = ForeignKey(name = "fk_calculation_status_calculation_id"))
-    private val calculation: Calculation? = null,
+    var calculation: Calculation? = null,
 
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
-    private val createdDate: LocalDateTime? = null,
+    var createdDate: LocalDateTime? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
