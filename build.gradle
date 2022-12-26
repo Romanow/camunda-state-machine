@@ -16,7 +16,7 @@ idea {
 }
 
 ext {
-    camundaVersion = "7.15.0"
+    camundaVersion = "7.16.0"
     openApiVersion = "1.6.14"
     testCntainerVersion = "1.16.0"
 }

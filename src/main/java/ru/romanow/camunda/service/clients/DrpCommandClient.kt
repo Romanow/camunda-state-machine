@@ -6,27 +6,21 @@ import org.springframework.web.reactive.function.client.WebClient
 import ru.romanow.camunda.config.properties.ServicesUrlProperties
 import ru.romanow.camunda.exceptions.RestClientException
 import ru.romanow.camunda.exceptions.buildEx
-import ru.romanow.camunda.models.EtlResponse
-import ru.romanow.camunda.models.PeriodResponse
+import ru.romanow.camunda.models.UploadCashflowParametersCommand
 import java.util.*
 
 @Service
-class TransferRateClient(
+class DrpCommandClient(
     private val servicesUrlProperties: ServicesUrlProperties,
     private val webClient: WebClient,
-) : RestClient {
+) {
 
-    override fun migrate(calculationUid: UUID, itemUid: UUID, periods: List<PeriodResponse>) =
+    fun copyParams(request: UploadCashflowParametersCommand) =
         webClient.post()
-            .uri("${servicesUrlProperties.transferRateUrl}/api/v1/transfer-rate/migration-to-staged") {
-                it.queryParam("calculationUid", calculationUid)
-                    .queryParam("calculationVersionUid", calculationUid)
-                    .queryParam("transferRateUid", itemUid)
-                    .build()
-            }
-            .body(BodyInserters.fromValue(periods))
+            .uri("${servicesUrlProperties.drpCommandUrl}/api/v1/drp/cash-flow/copy-params")
+            .body(BodyInserters.fromValue(request))
             .retrieve()
             .onStatus({ it.isError }) { response -> buildEx(response) { RestClientException(it) } }
-            .bodyToMono(EtlResponse::class.java)
+            .bodyToMono(UUID::class.java)
             .block()!!
 }

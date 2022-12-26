@@ -34,7 +34,7 @@ class CashFlowController(
         ).build()
     }
 
-    @PostMapping("/answer-from-drp")
-    fun answerFromDrp(@Valid @RequestBody request: AirflowResponse): CalculationResponse =
-        calculationService.processFromDrp(request)
+    @PostMapping("/{calculationUid}/answer-from-drp")
+    fun answerFromDrp(@PathVariable calculationUid: UUID, @Valid @RequestBody response: AirflowResponse): CalculationResponse =
+        calculationManagementService.processFromDrp(calculationUid, response)
 }

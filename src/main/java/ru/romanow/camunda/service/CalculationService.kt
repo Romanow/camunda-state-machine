@@ -9,5 +9,4 @@ import java.util.*
 interface CalculationService {
     fun getByUid(calculationUid: UUID): CalculationResponse
     fun create(request: CreateCalculationRequest): Calculation
-    fun processFromDrp(request: AirflowResponse): CalculationResponse
 }

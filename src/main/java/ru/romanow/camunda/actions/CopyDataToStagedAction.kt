@@ -1,11 +1,10 @@
 package ru.romanow.camunda.actions
 
-import org.camunda.bpm.engine.delegate.BpmnError
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestClientException
+import ru.romanow.camunda.exceptions.RestClientException
 import ru.romanow.camunda.service.CalculationPeriodService
 import ru.romanow.camunda.service.clients.MacroScenarioClient
 import ru.romanow.camunda.service.clients.ProductScenarioClient
@@ -32,17 +31,18 @@ class CopyDataToStagedAction(
 
         logger.info("Process periods $periods for calculation '$calculationUid'")
 
-        try {
-            val macroTables = macroScenarioClient.migrate(calculationUid, macroUid, periods)
-            val transferRateTables = transferRateClient.migrate(calculationUid, transferRateUid, periods)
-            val productScenarioTables = productScenarioClient.migrate(calculationUid, productScenarioUid, periods)
+        macroScenarioClient
+            .migrate(calculationUid, macroUid, periods)
+            .let { execution.setVariable(MACRO_TABLES, toJson(it.etlTableList)) }
 
-            execution.setVariable(MACRO_TABLES, macroTables)
-            execution.setVariable(TRANSFER_RATE_TABLES, transferRateTables)
-            execution.setVariable(PRODUCT_SCENARIO_TABLES, productScenarioTables)
-        } catch (exception: RuntimeException) {
-            throw BpmnError("calculation error", exception.message)
-        }
+        transferRateClient
+            .migrate(calculationUid, transferRateUid, periods)
+            .let { execution.setVariable(TRANSFER_RATE_TABLES, toJson(it.etlTableList)) }
+
+        productScenarioClient
+            .migrate(calculationUid, productScenarioUid, periods)
+            .let { execution.setVariable(PRODUCT_SCENARIO_TABLES, toJson(it.etlTableList)) }
+
     }
 
     private fun <T> get(execution: DelegateExecution, name: String): T =

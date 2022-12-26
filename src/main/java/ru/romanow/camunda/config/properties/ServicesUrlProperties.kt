@@ -9,4 +9,5 @@ data class ServicesUrlProperties(
     val macroScenarioUrl: String? = null,
     val transferRateUrl: String? = null,
     val productScenarioUrl: String? = null,
+    val drpCommandUrl: String? = null,
 )

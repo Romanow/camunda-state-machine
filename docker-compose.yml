@@ -13,5 +13,13 @@ services:
     ports:
       - "5432:5432"
 
+  wiremock:
+    image: wiremock/wiremock:2.35.0
+    container_name: wiremock
+    volumes:
+      - ./stubs:/home/wiremock/
+    ports:
+      - "9999:8080"
+
 volumes:
   db-data:

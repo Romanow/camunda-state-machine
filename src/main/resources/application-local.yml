@@ -12,3 +12,4 @@ services:
   macro-scenario-url: http://localhost:9999
   transfer-rate-url: http://localhost:9999
   product-scenario-url: http://localhost:9999
+  drp-command-url: http://localhost:9999

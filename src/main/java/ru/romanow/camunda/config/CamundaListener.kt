@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.EventListener
 
 @Configuration
-class CamundaListener(
-
-) {
+class CamundaListener {
     private val logger = LoggerFactory.getLogger(CamundaListener::class.java)
 
     @EventListener

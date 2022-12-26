@@ -40,3 +40,4 @@ services:
   macro-scenario-url: ${MACRO_SCENARIO_URL:}
   transfer-rate-url: ${TRANSFER_RATE_URL:}
   product-scenario-url: ${PRODUCT_SCENARIO_URL:}
+  drp-command-url: ${DRP_COMMAND_URL:}

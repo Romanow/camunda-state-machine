@@ -1,0 +1,162 @@
+{
+  "mappings": [
+    {
+      "id": "c9d70302-4234-4780-b371-50360fc169cd",
+      "name": "DRP Command copy params",
+      "request": {
+        "urlPath": "/api/v1/drp/cash-flow/copy-params",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          }
+        },
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": {
+              "expression": "solveId",
+              "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            }
+          },
+          {
+            "matchesJsonPath": {
+              "expression": "calculationSourceTables",
+              "equalTo": "cashflow.public.data"
+            }
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "\"2f62fda9-e111-48e1-b8ff-cfba56231c16\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "c9d70302-4234-4780-b371-50360fc169cd",
+      "persistent": true,
+      "priority": 5,
+      "postServeActions": []
+    },
+    {
+      "id": "d690b414-70af-4827-a9f5-9a13a5f53b88",
+      "name": "Product Scenario Service",
+      "request": {
+        "urlPath": "/api/v1/product-scenario/migration-to-staged",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          }
+        },
+        "queryParameters": {
+          "calculationVersionUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          },
+          "scenarioUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          }
+        },
+        "bodyPatterns": [
+          {
+            "equalToJson": "[\n  {\n    \"startDate\": \"01-10-2022\",\n    \"endDate\": \"01-12-2022\",\n    \"mark\": \"M1\",\n    \"serialNumber\": 1\n  }  \n]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"etlTableList\": [\n    {\n      \"database\": \"cashflow\",\n      \"schema\": \"public\",\n      \"name\": \"data\"\n    }\n  ]\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "d690b414-70af-4827-a9f5-9a13a5f53b88",
+      "persistent": true,
+      "priority": 5,
+      "postServeActions": []
+    },
+    {
+      "id": "f46d9794-feea-4fda-a430-269ea80e8f3d",
+      "name": "Transfer Rate Service",
+      "request": {
+        "urlPath": "/api/v1/transfer-rate/migration-to-staged",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          }
+        },
+        "queryParameters": {
+          "calculationUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          },
+          "calculationVersionUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          },
+          "transferRateUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          }
+        },
+        "bodyPatterns": [
+          {
+            "equalToJson": "[\n  {\n    \"startDate\": \"01-10-2022\",\n    \"endDate\": \"01-12-2022\",\n    \"mark\": \"M1\",\n    \"serialNumber\": 1\n  }  \n]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"etlTableList\": [\n    {\n      \"database\": \"cashflow\",\n      \"schema\": \"public\",\n      \"name\": \"data\"\n    }\n  ]\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "f46d9794-feea-4fda-a430-269ea80e8f3d",
+      "persistent": true,
+      "priority": 5,
+      "postServeActions": []
+    },
+    {
+      "id": "d9ddcd12-02f3-4577-80fe-ce70d95aa2e2",
+      "name": "Macro Scenario Service",
+      "request": {
+        "urlPath": "/api/v1/macro/migration-to-staged",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          }
+        },
+        "queryParameters": {
+          "calculationUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          },
+          "calculationVersionUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          },
+          "macroUid": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          }
+        },
+        "bodyPatterns": [
+          {
+            "equalToJson": "[\n  {\n    \"startDate\": \"01-10-2022\",\n    \"endDate\": \"01-12-2022\",\n    \"mark\": \"M1\",\n    \"serialNumber\": 1\n  }  \n]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"etlTableList\": [\n    {\n      \"database\": \"cashflow\",\n      \"schema\": \"public\",\n      \"name\": \"data\"\n    }\n  ]\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "d9ddcd12-02f3-4577-80fe-ce70d95aa2e2",
+      "persistent": true,
+      "priority": 5,
+      "postServeActions": []
+    }
+  ],
+  "meta": {
+    "total": 4
+  }
+}

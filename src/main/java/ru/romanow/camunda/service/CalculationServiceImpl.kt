@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.romanow.camunda.domain.Calculation
 import ru.romanow.camunda.domain.enums.CalculationType
-import ru.romanow.camunda.models.AirflowResponse
 import ru.romanow.camunda.models.CalculationResponse
 import ru.romanow.camunda.models.CreateCalculationRequest
 import ru.romanow.camunda.repository.CalculationRepository
@@ -55,9 +54,5 @@ class CalculationServiceImpl(
         calculationPeriodService.create(request.periods!!, calculation)
 
         return calculation
-    }
-
-    override fun processFromDrp(request: AirflowResponse): CalculationResponse {
-        TODO("Not yet implemented")
     }
 }
