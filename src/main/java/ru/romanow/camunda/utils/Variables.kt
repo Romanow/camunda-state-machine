@@ -1,6 +1,7 @@
 package ru.romanow.camunda.utils
 
 const val CALCULATION_UID = "calculationUid"
+const val OPERATION_UID = "operationUid"
 
 const val MACRO_UID = "macroUid"
 const val TRANSFER_RATE_UID = "transferRateUid"

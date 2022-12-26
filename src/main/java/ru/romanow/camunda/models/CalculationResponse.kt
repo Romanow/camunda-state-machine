@@ -10,7 +10,7 @@ data class CalculationResponse(
     val name: String? = null,
     val description: String? = null,
     val type: CalculationType? = null,
-    val status: CalculationStatus? = null,
+    val status: CalculationStatusResponse? = null,
     val periods: List<PeriodResponse>? = null,
     val createdDate: LocalDateTime? = null,
     val modifiedDate: LocalDateTime? = null,

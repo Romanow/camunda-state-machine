@@ -1,21 +1,24 @@
 package ru.romanow.camunda.domain.enums
 
 enum class Status {
-    CALCULATION_STARTED,
+    CALCULATION_STARTED,        // CashFlowCalculationStart
+    DATA_COPIED_TO_STAGED,      // CopyDataToStageAction
 
-    DATA_PREPARED,
-    DATA_COPIED_TO_STAGED,
+    ETL_START,                  // StartEtlProcess
+    ETL_SENT_TO_DRP,            // StartEtlAction
+    ETL_COMPLETED,              // FinishEtlProcess
 
-    ETL_START,
-    ETL_COMPLETED,
+    CALCULATION_START,          // StartCalculationProcess
+    CALCULATION_SENT_TO_DRP,    // StartCalculationAction
+    CALCULATION_COMPLETED,      // FinishCalculationProcess
 
-    CALCULATION_START,
-    CALCULATION_COMPLETED,
+    REVERSED_ETL_START,         // StartReverseEtlProcess
+    REVERSED_ETL_SENT_TO_DRP,   // StartReverseEtlAction
+    REVERSED_ETL_COMPLETED,     // FinishReverseEtlProcess
 
-    REVERSED_ETL_START,
-    REVERSED_ETL_COMPLETED,
+    DATA_COPIED_FROM_STAGED,    // CopyDataFromStageAction
 
-    DATA_COPIED_FROM_STAGED,
+    CALCULATION_FINISHED,       // CashFlowCalculationFinish
 
-    CALCULATION_FINISHED,
+    CALCULATION_ERROR,          // ErrorAction
 }

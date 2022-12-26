@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import ru.romanow.camunda.domain.Calculation
 import ru.romanow.camunda.domain.enums.CalculationType
 import ru.romanow.camunda.models.CalculationResponse
+import ru.romanow.camunda.models.CalculationStatusResponse
 import ru.romanow.camunda.models.CreateCalculationRequest
 import ru.romanow.camunda.repository.CalculationRepository
 import ru.romanow.camunda.utils.UUIDGenerator

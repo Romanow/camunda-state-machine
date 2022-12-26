@@ -94,6 +94,15 @@
     * `reverse etl result event` – завершение ETL процесса.
     * `calculation error` – глобальная ошибка расчета.
 
+```sql
+SELECT c.uid                AS uid
+     , c.name               AS name
+     , ARRAY_AGG(cs.status) AS statuses
+FROM calculation_status cs
+    INNER JOIN calculation c ON c.id = cs.calculation_id
+GROUP BY c.uid, c.name;
+```
+
 ### Архитектурные вопросы
 
 * [ ] Потребление памяти.

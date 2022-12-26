@@ -21,7 +21,8 @@ class CashFlowController(
 ) {
 
     @GetMapping("/{calculationUid}")
-    fun getByUid(@PathVariable calculationUid: UUID): CalculationResponse = calculationService.getByUid(calculationUid)
+    fun getByUid(@PathVariable calculationUid: UUID): CalculationResponse =
+        calculationService.getByUid(calculationUid)
 
     @PostMapping
     fun create(@Valid @RequestBody request: CreateCalculationRequest): ResponseEntity<Void> {
@@ -35,6 +36,9 @@ class CashFlowController(
     }
 
     @PostMapping("/{calculationUid}/answer-from-drp")
-    fun answerFromDrp(@PathVariable calculationUid: UUID, @Valid @RequestBody response: AirflowResponse): CalculationResponse =
+    fun answerFromDrp(
+        @PathVariable calculationUid: UUID,
+        @Valid @RequestBody response: AirflowResponse,
+    ): CalculationResponse =
         calculationManagementService.processFromDrp(calculationUid, response)
 }

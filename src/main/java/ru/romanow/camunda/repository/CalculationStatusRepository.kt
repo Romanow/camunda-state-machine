@@ -12,7 +12,7 @@ interface CalculationStatusRepository : JpaRepository<CalculationStatus, Long> {
         select cs 
         from CalculationStatus cs 
         where cs.calculation.uid = :calculationUid 
-        order by cs.createdDate
+        order by cs.createdDate desc 
     """)
     fun getLastStatus(@Param("calculationUid") calculationUid: UUID, pageable: Pageable): List<CalculationStatus>
 }

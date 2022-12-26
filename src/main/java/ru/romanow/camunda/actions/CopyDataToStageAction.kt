@@ -4,7 +4,6 @@ import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.romanow.camunda.exceptions.RestClientException
 import ru.romanow.camunda.service.CalculationPeriodService
 import ru.romanow.camunda.service.clients.MacroScenarioClient
 import ru.romanow.camunda.service.clients.ProductScenarioClient
@@ -12,14 +11,14 @@ import ru.romanow.camunda.service.clients.TransferRateClient
 import ru.romanow.camunda.utils.*
 import java.util.*
 
-@Service("CopyDataToStagedAction")
-class CopyDataToStagedAction(
+@Service("CopyDataToStageAction")
+class CopyDataToStageAction(
     private val calculationPeriodService: CalculationPeriodService,
     private val productScenarioClient: ProductScenarioClient,
     private val macroScenarioClient: MacroScenarioClient,
     private val transferRateClient: TransferRateClient,
 ) : JavaDelegate {
-    private val logger = LoggerFactory.getLogger(CopyDataToStagedAction::class.java)
+    private val logger = LoggerFactory.getLogger(CopyDataToStageAction::class.java)
 
     override fun execute(execution: DelegateExecution) {
         val calculationUid: UUID = get(execution, CALCULATION_UID)
@@ -44,7 +43,4 @@ class CopyDataToStagedAction(
             .let { execution.setVariable(PRODUCT_SCENARIO_TABLES, toJson(it.etlTableList)) }
 
     }
-
-    private fun <T> get(execution: DelegateExecution, name: String): T =
-        execution.getVariable(name) as T
 }

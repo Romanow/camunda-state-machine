@@ -9,6 +9,7 @@
   <bpmn:message id="Message_2oro2k3" name="reverse etl start" />
   <bpmn:error id="GlobalError" name="calculation error" errorCode="calculation error" />
   <bpmn:collaboration id="Collaboration_1y645jd">
+    <bpmn:extensionElements />
     <bpmn:participant id="Participant_1gly4cp" name="CASH FLOW CALCULATION PROCESS" processRef="CashFlow" />
   </bpmn:collaboration>
   <bpmn:process id="CashFlow" isExecutable="true">
@@ -22,14 +23,40 @@
       <bpmn:incoming>Flow_1c1u90s</bpmn:incoming>
       <bpmn:outgoing>Flow_1cx1wbu</bpmn:outgoing>
       <bpmn:endEvent id="FinishEtlProcess" name="Finish ETL Process">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>ETL_COMPLETED</camunda:string>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_0g6m4ls</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1qbkigr" sourceRef="StartEtlAction" targetRef="EtlCompletedResult" />
       <bpmn:startEvent id="StartEtlProcess" name="Start ETL Process">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>ETL_START</camunda:string>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
         <bpmn:outgoing>Flow_1ts29m7</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_1ts29m7" sourceRef="StartEtlProcess" targetRef="StartEtlAction" />
+      <bpmn:sequenceFlow id="Flow_1ts29m7" sourceRef="StartEtlProcess" targetRef="StartEtlAction">
+        <bpmn:extensionElements />
+      </bpmn:sequenceFlow>
       <bpmn:serviceTask id="StartEtlAction" name="Start ETL Process" camunda:delegateExpression="#{StartEtlAction}">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>ETL_SENT_TO_DRP</camunda:string>
+            </camunda:field>
+            <camunda:field name="operationUid">
+              <camunda:expression>${operationUid}</camunda:expression>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_1ts29m7</bpmn:incoming>
         <bpmn:outgoing>Flow_1qbkigr</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -58,13 +85,26 @@
       <bpmn:sequenceFlow id="Flow_0g6m4ls" sourceRef="EtlProcessCompleted" targetRef="FinishEtlProcess" />
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_1cx1wbu" sourceRef="Activity_0ajj8m0" targetRef="Activity_0mpqpun" />
-    <bpmn:sequenceFlow id="Flow_1c1u90s" sourceRef="CopyDataToStagedAction" targetRef="Activity_0ajj8m0" />
+    <bpmn:sequenceFlow id="Flow_1c1u90s" sourceRef="CopyDataToStageAction" targetRef="Activity_0ajj8m0" />
     <bpmn:startEvent id="CashFlowCalculationStart" name="Cash Flow Calculation Start">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>CALCULATION_STARTED</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1c1u91s</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1c1u91s" sourceRef="CashFlowCalculationStart" targetRef="CopyDataToStagedAction" />
-    <bpmn:serviceTask id="CopyDataToStagedAction" name="Copy Data to Stage" camunda:delegateExpression="#{CopyDataToStagedAction}">
-      <bpmn:extensionElements />
+    <bpmn:sequenceFlow id="Flow_1c1u91s" sourceRef="CashFlowCalculationStart" targetRef="CopyDataToStageAction" />
+    <bpmn:serviceTask id="CopyDataToStageAction" name="Copy Data to Stage" camunda:delegateExpression="#{CopyDataToStageAction}">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>DATA_COPIED_TO_STAGED</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1c1u91s</bpmn:incoming>
       <bpmn:outgoing>Flow_1c1u90s</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -72,17 +112,27 @@
       <bpmn:incoming>Flow_1cx1wbu</bpmn:incoming>
       <bpmn:outgoing>Flow_1gixxig</bpmn:outgoing>
       <bpmn:endEvent id="FinishCalculationProcess">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>CALCULATION_COMPLETED</camunda:string>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_07s0kv7</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:task id="CalculationStartedAction" name="Start Calculation">
-        <bpmn:incoming>Flow_0g794wz</bpmn:incoming>
-        <bpmn:outgoing>Flow_0tlbs1n</bpmn:outgoing>
-      </bpmn:task>
-      <bpmn:sequenceFlow id="Flow_0tlbs1n" sourceRef="CalculationStartedAction" targetRef="Gateway_16cq8tu" />
+      <bpmn:sequenceFlow id="Flow_0tlbs1n" sourceRef="StartCalculationAction" targetRef="Gateway_16cq8tu" />
       <bpmn:startEvent id="StartCalculationProcess" name="Start Calculation Process">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>CALCULATION_START</camunda:string>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
         <bpmn:outgoing>Flow_0g794wz</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_0g794wz" sourceRef="StartCalculationProcess" targetRef="CalculationStartedAction" />
+      <bpmn:sequenceFlow id="Flow_0g794wz" sourceRef="StartCalculationProcess" targetRef="StartCalculationAction" />
       <bpmn:sequenceFlow id="Flow_1tdmajf" sourceRef="Gateway_16cq8tu" targetRef="CalculationProcessCompleted" />
       <bpmn:intermediateCatchEvent id="CalculationProcessCompleted" name="Calculation Process Completed">
         <bpmn:incoming>Flow_1tdmajf</bpmn:incoming>
@@ -106,20 +156,44 @@
         <bpmn:incoming>Flow_0nu7iha</bpmn:incoming>
         <bpmn:errorEventDefinition id="ErrorEventDefinition_0whn8u4" errorRef="GlobalError" />
       </bpmn:endEvent>
+      <bpmn:serviceTask id="StartCalculationAction" name="Start Calculation" camunda:delegateExpression="#{StartCalculationAction}">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>CALCULATION_SENT_TO_DRP</camunda:string>
+            </camunda:field>
+            <camunda:field name="operationUid">
+              <camunda:expression>${operationUid}</camunda:expression>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0g794wz</bpmn:incoming>
+        <bpmn:outgoing>Flow_0tlbs1n</bpmn:outgoing>
+      </bpmn:serviceTask>
     </bpmn:subProcess>
     <bpmn:subProcess id="Activity_09n9ipm" name="Reverse ETL Process">
       <bpmn:incoming>Flow_1gixxig</bpmn:incoming>
       <bpmn:outgoing>Flow_0pfqfcx</bpmn:outgoing>
-      <bpmn:task id="StartReverseEtlAction" name="Start Reverse ETL Process">
-        <bpmn:incoming>Flow_1a14uyh</bpmn:incoming>
-        <bpmn:outgoing>Flow_0idwqz5</bpmn:outgoing>
-      </bpmn:task>
       <bpmn:sequenceFlow id="Flow_0idwqz5" sourceRef="StartReverseEtlAction" targetRef="ReverseEtlCompletedResult" />
       <bpmn:startEvent id="StartReverseEtlProcess" name="Start Reverse ETL Process">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>REVERSED_ETL_START</camunda:string>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
         <bpmn:outgoing>Flow_1a14uyh</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sequenceFlow id="Flow_1a14uyh" sourceRef="StartReverseEtlProcess" targetRef="StartReverseEtlAction" />
       <bpmn:endEvent id="FinishReverseEtlProcess" name="Finish Reverse ETL Process">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>REVERSED_ETL_COMPLETED</camunda:string>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_1qdb1sp</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:endEvent id="ReverseEtlCompletedErrorEvent">
@@ -145,14 +219,31 @@
       <bpmn:sequenceFlow id="Flow_1qdb1sp" sourceRef="ReverseEtlProcessCompleted" targetRef="FinishReverseEtlProcess" />
       <bpmn:sequenceFlow id="Flow_1d29jx7" sourceRef="ReverseEtlCompletedResult" targetRef="ReverseEtlProcessError" />
       <bpmn:sequenceFlow id="Flow_0xqytoc" sourceRef="ReverseEtlProcessError" targetRef="ReverseEtlCompletedErrorEvent" />
+      <bpmn:serviceTask id="StartReverseEtlAction" name="Start Reverse ETL Process" camunda:delegateExpression="#{StartReverseEtlAction}">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+            <camunda:field name="status">
+              <camunda:string>REVERSED_ETL_SENT_TO_DRP</camunda:string>
+            </camunda:field>
+            <camunda:field name="operationUid">
+              <camunda:expression>${operationUid}</camunda:expression>
+            </camunda:field>
+          </camunda:executionListener>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1a14uyh</bpmn:incoming>
+        <bpmn:outgoing>Flow_0idwqz5</bpmn:outgoing>
+      </bpmn:serviceTask>
     </bpmn:subProcess>
     <bpmn:endEvent id="CashFlowCalculationFinish" name="Cash Flow Calculation Finish">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>CALCULATION_FINISHED</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0dthxym</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:task id="CopyDataFromStageAction" name="Copy Data from Stage">
-      <bpmn:incoming>Flow_0pfqfcx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0dthxym</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:subProcess id="Activity_01oxab1" triggeredByEvent="true">
       <bpmn:sequenceFlow id="Flow_1uv4s6v" sourceRef="ErrorEvent" targetRef="ErrorAction" />
       <bpmn:endEvent id="CashFlowCalculationError" name="Calculation Error">
@@ -169,6 +260,20 @@
         <bpmn:errorEventDefinition id="ErrorEventDefinition_0rv4h5w" errorRef="GlobalError" />
       </bpmn:startEvent>
     </bpmn:subProcess>
+    <bpmn:serviceTask id="CopyDataFromStageAction" name="Copy Data from Stage" camunda:delegateExpression="#{CopyDataFromStageAction}">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>DATA_COPIED_FROM_STAGED</camunda:string>
+          </camunda:field>
+          <camunda:field name="operationUid">
+            <camunda:expression>${operationUid}</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0pfqfcx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dthxym</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1y645jd">
@@ -244,7 +349,7 @@
           <dc:Bounds x="181" y="530" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1prs3wx_di" bpmnElement="CopyDataToStagedAction">
+      <bpmndi:BPMNShape id="Activity_1prs3wx_di" bpmnElement="CopyDataToStageAction">
         <dc:Bounds x="300" y="465" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0mpqpun_di" bpmnElement="Activity_0mpqpun" isExpanded="true">
@@ -253,10 +358,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_12aikpf_di" bpmnElement="FinishCalculationProcess">
         <dc:Bounds x="1712" y="487" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_11p0otk" bpmnElement="CalculationStartedAction">
-        <dc:Bounds x="1320" y="465" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15rke6q_di" bpmnElement="StartCalculationProcess">
         <dc:Bounds x="1220" y="487" width="36" height="36" />
@@ -281,6 +382,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15qno15_di" bpmnElement="CalculationCompletedErrorEvent">
         <dc:Bounds x="1712" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t5lbr5_di" bpmnElement="StartCalculationAction">
+        <dc:Bounds x="1320" y="465" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0tlbs1n_di" bpmnElement="Flow_0tlbs1n">
         <di:waypoint x="1420" y="505" />
@@ -309,10 +413,6 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_0wzn7cu" bpmnElement="Activity_09n9ipm" isExpanded="true">
         <dc:Bounds x="1880" y="370" width="600" height="210" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0tak3uy" bpmnElement="StartReverseEtlAction">
-        <dc:Bounds x="2010" y="475" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0mptomm" bpmnElement="StartReverseEtlProcess">
@@ -345,6 +445,9 @@
       <bpmndi:BPMNShape id="Gateway_153p28v_di" bpmnElement="ReverseEtlCompletedResult">
         <dc:Bounds x="2165" y="490" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08mjevc_di" bpmnElement="StartReverseEtlAction">
+        <dc:Bounds x="2010" y="475" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_1j2bvz8" bpmnElement="Flow_0idwqz5">
         <di:waypoint x="2110" y="515" />
         <di:waypoint x="2165" y="515" />
@@ -376,10 +479,6 @@
           <dc:Bounds x="2698" y="530" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0nfmpaq_di" bpmnElement="CopyDataFromStageAction">
-        <dc:Bounds x="2550" y="465" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0599vt2_di" bpmnElement="Activity_01oxab1" isExpanded="true">
         <dc:Bounds x="2360" y="130" width="420" height="200" />
       </bpmndi:BPMNShape>
@@ -406,6 +505,9 @@
         <di:waypoint x="2610" y="230" />
         <di:waypoint x="2682" y="230" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0zug5bq_di" bpmnElement="CopyDataFromStageAction">
+        <dc:Bounds x="2550" y="465" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1gixxig_di" bpmnElement="Flow_1gixxig">
         <di:waypoint x="1780" y="515" />
         <di:waypoint x="1880" y="515" />

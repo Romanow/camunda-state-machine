@@ -14,7 +14,7 @@ import java.util.*
 class StartEtlAction(
     private val drpCommandClient: DrpCommandClient,
 ) : JavaDelegate {
-    private val logger = LoggerFactory.getLogger(CopyDataToStagedAction::class.java)
+    private val logger = LoggerFactory.getLogger(CopyDataToStageAction::class.java)
 
     override fun execute(execution: DelegateExecution) {
         val calculationUid: UUID = get(execution, CALCULATION_UID)
@@ -34,10 +34,8 @@ class StartEtlAction(
             calculationSourceTables = tables
         )
 
-        drpCommandClient.copyParams(request)
+        val operationUid = drpCommandClient.copyParams(request)
+
+        execution.setVariable(OPERATION_UID, operationUid)
     }
-
-    private fun <T> get(execution: DelegateExecution, name: String): T =
-        execution.getVariable(name) as T
-
 }
