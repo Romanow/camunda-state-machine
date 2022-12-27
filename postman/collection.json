@@ -55,7 +55,7 @@
 			"response": []
 		},
 		{
-			"name": "DRP Answer ETL completed",
+			"name": "ETL completed",
 			"event": [
 				{
 					"listen": "test",
@@ -106,7 +106,7 @@
 			"response": []
 		},
 		{
-			"name": "DRP Answer Calculation completed",
+			"name": "Calculation completed",
 			"event": [
 				{
 					"listen": "test",
@@ -120,7 +120,7 @@
 							"    ",
 							"    const response = pm.response.json();",
 							"    pm.expect(response.uid).to.be.eq(calculationUid)",
-							"    pm.expect(response.status).to.be.eq(\"REVERSE_ETL_SENT_TO_DRP\")",
+							"    pm.expect(response.status).to.be.eq(\"REVERSED_ETL_SENT_TO_DRP\")",
 							"})"
 						],
 						"type": "text/javascript"
@@ -132,7 +132,58 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"solveId\": \"{{calculationUid}}\",\n    \"status\": \"SUCCESS\",\n    \"calculationParametersTables\": {}\n}",
+					"raw": "{\n    \"solveId\": \"{{calculationUid}}\",\n    \"status\": \"SUCCESS\",\n    \"aggReportTableName\": \"data\",\n    \"calculationParametersTables\": {}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/cashflow/calculation/{{calculationUid}}/answer-from-drp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"cashflow",
+						"calculation",
+						"{{calculationUid}}",
+						"answer-from-drp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reverse ETL completed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Calculation Process Completed\", function() {",
+							"    pm.response.to.have.status(200)",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");",
+							"    ",
+							"    const calculationUid = pm.collectionVariables.get(\"calculationUid\")",
+							"    ",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.uid).to.be.eq(calculationUid)",
+							"    pm.expect(response.status).to.be.eq(\"CALCULATION_FINISHED\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"solveId\": \"{{calculationUid}}\",\n    \"status\": \"UPLOAD_FINISHED\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
