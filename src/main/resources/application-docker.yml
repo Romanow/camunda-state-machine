@@ -6,8 +6,8 @@ spring:
     driver-class-name: org.postgresql.Driver
 
 services:
-  macro-scenario-url: http://wiremock:9999
-  transfer-rate-url: http://wiremock:9999
-  product-scenario-url: http://wiremock:9999
-  drp-command-url: http://wiremock:9999
-  balance-result-url: http://wiremock:9999
+  macro-scenario-url: http://wiremock:8080
+  transfer-rate-url: http://wiremock:8080
+  product-scenario-url: http://wiremock:8080
+  drp-command-url: http://wiremock:8080
+  balance-result-url: http://wiremock:8080
