@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.CONTENT_TYPE
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.test.context.ActiveProfiles
@@ -85,7 +84,7 @@ internal class CashFlowProcessTest {
         val request = CreateCalculationRequest(
             name = randomAlphabetic(8),
             periods = listOf(period),
-            startDate = FACT_DATE.atStartOfDay(),
+            startDate = FACT_DATE,
             macroUid = MACRO_UID,
             transferRateUid = TRANSFER_RATE_UID,
             productScenarioUid = PRODUCT_SCENARIO_UID,
@@ -120,18 +119,15 @@ internal class CashFlowProcessTest {
         prepareStubForUploadParams(CALCULATION_UID)
 
         // When
-        val result = mockMvc
+        mockMvc
             .perform(MockMvcRequestBuilders.post("/api/v1/cashflow/calculation/")
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(MockMvcResultMatchers.status().isCreated)
-            .andExpect(MockMvcResultMatchers.header().exists(HttpHeaders.LOCATION))
-            .andReturn()
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.uid").value(CALCULATION_UID.toString()))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(Status.ETL_SENT_TO_DRP.name))
 
         // Then
-        val location = result.response.getHeader(HttpHeaders.LOCATION)!!
-        assertThat(UUID.fromString(location.substring(location.lastIndexOf("/") + 1))).isEqualTo(CALCULATION_UID)
-
         val statuses = calculationStatusRepository
             .getStatuses(CALCULATION_UID, Pageable.unpaged())
             .map { it.status }

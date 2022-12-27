@@ -28,7 +28,7 @@ data class Calculation(
     var description: String? = null,
 
     @Column(name = "start_date", nullable = false)
-    var startDate: LocalDateTime? = null,
+    var startDate: LocalDate? = null,
 
     @Column(name = "type", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)

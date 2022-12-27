@@ -6,6 +6,6 @@ import ru.romanow.camunda.models.CreateCalculationRequest
 import java.util.*
 
 interface CalculationManagementService {
-    fun createAndStartCalculation(request: CreateCalculationRequest): UUID
+    fun createAndStartCalculation(request: CreateCalculationRequest): CalculationResponse
     fun processFromDrp(calculationUid: UUID, response: AirflowResponse): CalculationResponse
 }

@@ -1,6 +1,7 @@
 package ru.romanow.camunda.models
 
-import java.time.LocalDateTime
+import com.fasterxml.jackson.annotation.JsonFormat
+import java.time.LocalDate
 import java.util.*
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -14,7 +15,8 @@ data class CreateCalculationRequest(
     val periods: List<PeriodRequest>? = null,
     @field:NotNull
     @field:PastOrPresent
-    val startDate: LocalDateTime? = null,
+    @field:JsonFormat(pattern = "dd-MM-yyyy")
+    val startDate: LocalDate? = null,
     @field:NotNull
     val macroUid: UUID? = null,
     @field:NotNull

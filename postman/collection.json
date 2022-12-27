@@ -14,11 +14,13 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Create Calculation\", function() {",
-							"    pm.response.to.have.status(201)",
-							"    var location = pm.response.headers.get(\"Location\")",
-							"    pm.expect(location).to.not.empty;",
-							"    var l = location.split(\"/\").pop()",
-							"    pm.environment.set(\"calculationUid\", l)",
+							"    pm.response.to.have.status(200)",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");",
+							"    ",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.uid).to.not.null",
+							"    pm.expect(response.status).to.be.eq(\"ETL_SENT_TO_DRP\")",
+							"    pm.collectionVariables.set(\"calculationUid\", response.uid)",
 							"})"
 						],
 						"type": "text/javascript"
@@ -30,7 +32,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"{{$randomProductName}}\",\n    \"periods\": [\n        {\n            \"startDate\": \"2022-10-01\",\n            \"endDate\": \"2022-12-01\",\n            \"mark\": \"M1\",\n            \"serialNumber\": 1\n        }\n    ]\n}",
+					"raw": "{\n    \"name\": \"{{$randomProductName}}\",\n    \"startDate\": \"01-10-2022\",\n    \"macroUid\": \"{{$guid}}\",\n    \"transferRateUid\": \"{{$guid}}\",\n    \"productScenarioUid\": \"{{$guid}}\",\n    \"periods\": [\n        {\n            \"startDate\": \"01-10-2022\",\n            \"endDate\": \"01-12-2022\",\n            \"mark\": \"M1\",\n            \"serialNumber\": 1\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -53,7 +55,7 @@
 			"response": []
 		},
 		{
-			"name": "ETL Response",
+			"name": "DRP Answer ETL completed",
 			"event": [
 				{
 					"listen": "test",
@@ -61,6 +63,13 @@
 						"exec": [
 							"pm.test(\"Etl Process Completed\", function() {",
 							"    pm.response.to.have.status(200)",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");",
+							"    ",
+							"    const calculationUid = pm.collectionVariables.get(\"calculationUid\")",
+							"    ",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.uid).to.be.eq(calculationUid)",
+							"    pm.expect(response.status).to.be.eq(\"CALCULATION_SENT_TO_DRP\")",
 							"})"
 						],
 						"type": "text/javascript"
@@ -72,7 +81,58 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"solveId\": \"{{calculationUid}}\",\n    \"status\": \"UPLOADED\",\n    \"aggReportTableName\": \"cashflow.public.data\",\n    \"calculationParametersTables\": {}\n}",
+					"raw": "{\n    \"solveId\": \"{{calculationUid}}\",\n    \"status\": \"UPLOADED\",\n    \"calculationParametersTables\": {}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/cashflow/calculation/{{calculationUid}}/answer-from-drp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"cashflow",
+						"calculation",
+						"{{calculationUid}}",
+						"answer-from-drp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DRP Answer Calculation completed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Calculation Process Completed\", function() {",
+							"    pm.response.to.have.status(200)",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");",
+							"    ",
+							"    const calculationUid = pm.collectionVariables.get(\"calculationUid\")",
+							"    ",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.uid).to.be.eq(calculationUid)",
+							"    pm.expect(response.status).to.be.eq(\"REVERSE_ETL_SENT_TO_DRP\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"solveId\": \"{{calculationUid}}\",\n    \"status\": \"SUCCESS\",\n    \"calculationParametersTables\": {}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -100,6 +160,10 @@
 	"variable": [
 		{
 			"key": "processInstanceId",
+			"value": ""
+		},
+		{
+			"key": "calculationUid",
 			"value": ""
 		}
 	]

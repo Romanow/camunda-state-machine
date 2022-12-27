@@ -16,7 +16,7 @@ class CalculationManagementServiceImpl(
 ) : CalculationManagementService {
     private val logger = LoggerFactory.getLogger(CalculationManagementServiceImpl::class.java)
 
-    override fun createAndStartCalculation(request: CreateCalculationRequest): UUID {
+    override fun createAndStartCalculation(request: CreateCalculationRequest): CalculationResponse {
         val calculation = calculationService.create(request)
 
         processEngine.runtimeService
@@ -30,7 +30,7 @@ class CalculationManagementServiceImpl(
             ))
             .execute()
 
-        return calculation.uid!!
+        return calculationService.getByUid(calculation.uid!!)
     }
 
     override fun processFromDrp(calculationUid: UUID, response: AirflowResponse): CalculationResponse {

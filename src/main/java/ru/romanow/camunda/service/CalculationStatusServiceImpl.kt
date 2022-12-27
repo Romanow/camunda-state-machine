@@ -2,6 +2,7 @@ package ru.romanow.camunda.service
 
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import ru.romanow.camunda.domain.CalculationStatus
 import ru.romanow.camunda.domain.enums.Status
@@ -17,7 +18,7 @@ class CalculationStatusServiceImpl(
     private val calculationStatusRepository: CalculationStatusRepository,
 ) : CalculationStatusService {
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun create(calculationUid: UUID, status: Status, opts: Map<String, String?>): CalculationStatus {
         val calculation = calculationRepository.findByUid(calculationUid)
             .orElseThrow { EntityNotFoundException("Calculation '$calculationUid' not found") }

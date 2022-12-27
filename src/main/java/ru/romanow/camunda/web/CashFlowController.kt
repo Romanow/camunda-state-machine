@@ -1,9 +1,6 @@
 package ru.romanow.camunda.web
 
-import org.springframework.http.ResponseEntity
-import org.springframework.http.ResponseEntity.created
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest
 import ru.romanow.camunda.models.AirflowResponse
 import ru.romanow.camunda.models.CalculationResponse
 import ru.romanow.camunda.models.CreateCalculationRequest
@@ -25,15 +22,8 @@ class CashFlowController(
         calculationService.getByUid(calculationUid)
 
     @PostMapping
-    fun create(@Valid @RequestBody request: CreateCalculationRequest): ResponseEntity<Void> {
-        val calculationUid = calculationManagementService.createAndStartCalculation(request)
-        return created(
-            fromCurrentRequest()
-                .path("/{uid}")
-                .buildAndExpand(calculationUid)
-                .toUri()
-        ).build()
-    }
+    fun create(@Valid @RequestBody request: CreateCalculationRequest) =
+        calculationManagementService.createAndStartCalculation(request)
 
     @PostMapping("/{calculationUid}/answer-from-drp")
     fun answerFromDrp(

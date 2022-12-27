@@ -6,11 +6,6 @@
       "request": {
         "urlPath": "/api/v1/balance/migration",
         "method": "POST",
-        "headers": {
-          "Content-Type": {
-            "contains": "application/json"
-          }
-        },
         "queryParameters": {
           "solveId": {
             "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
@@ -25,7 +20,9 @@
         }
       },
       "uuid": "d03ff91e-719c-43d5-9ef6-bac1765d1898",
-      "persistent": true
+      "persistent": true,
+      "priority": 5,
+      "postServeActions": []
     },
     {
       "id": "65f089f0-694b-499a-b8ff-5897f1000413",
@@ -41,19 +38,19 @@
         "bodyPatterns": [
           {
             "matchesJsonPath": {
-              "expression": "solveId",
+              "expression": "$.solveId",
               "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
             }
           },
           {
             "matchesJsonPath": {
-              "expression": "aggregationReportTableName",
+              "expression": "$.aggregationReportTableName",
               "equalTo": "data"
             }
           },
           {
             "matchesJsonPath": {
-              "expression": "targetReportTableName",
+              "expression": "$.targetReportTableName",
               "equalTo": "cashflow.public.data"
             }
           }
@@ -83,20 +80,35 @@
         "bodyPatterns": [
           {
             "matchesJsonPath": {
-              "expression": "solveId",
+              "expression": "$.solveId",
               "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
             }
           },
           {
+            "matchesJsonPath": "$.calculationParametersTables"
+          },
+          {
+            "matchesJsonPath": "$.settings.balanceProductConfigs"
+          },
+          {
+            "matchesJsonPath": "$.settings.dealAttributes"
+          },
+          {
+            "matchesJsonPath": "$.settings.reportAttributes"
+          },
+          {
+            "matchesJsonPath": "$.settings.timeBucketSystemCustom"
+          },
+          {
             "matchesJsonPath": {
-              "expression": "calculationParametersTables",
-              "equalTo": "{\"macro\":{},\"transferRates\":{},\"products\":{}}"
+              "expression": "$.settings.reportDate",
+              "matches": "\\d{2}\\.\\d{2}\\.\\d{4}"
             }
           },
           {
             "matchesJsonPath": {
-              "expression": "settings",
-              "equalTo": "{\"balanceProductConfigs\":[{\"productType\":\"kul\"},{\"productType\":\"dul\"},{\"productType\":\"kfl_agg\"},{\"productType\":\"vfl\"}],\"dealAttributes\":[\"bal_num,\",\"segment\",\"lv25_product_bp_nm\"],\"reportAttributes\":[\"bal_num,\",\"segment\",\"lv25_product_bp_nm\",\"source_cd\"],\"timeBucketSystemCustom\":{\"tbsType\":\"INTERVAL_BOUNDARIES_TYPE\",\"tbsCodes\":[\"0D-1M\",\"1M-INF\"]},\"reportDate\":\"31.10.2022\",\"balanceFlag\":\"1\"}"
+              "expression": "$.settings.balanceFlag",
+              "matches": "\\d"
             }
           }
         ]
@@ -117,7 +129,7 @@
       "id": "c9d70302-4234-4780-b371-50360fc169cd",
       "name": "DRP Command copy params",
       "request": {
-        "urlPath": "/api/v1/drp/copy-params",
+        "urlPath": "/api/v1/drp/cash-flow/copy-params",
         "method": "POST",
         "headers": {
           "Content-Type": {
@@ -127,13 +139,13 @@
         "bodyPatterns": [
           {
             "matchesJsonPath": {
-              "expression": "solveId",
+              "expression": "$.solveId",
               "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
             }
           },
           {
             "matchesJsonPath": {
-              "expression": "calculationSourceTables",
+              "expression": "$.calculationSourceTables",
               "equalTo": "cashflow.public.data"
             }
           }

@@ -24,22 +24,7 @@ class CalculationServiceImpl(
     @Transactional(readOnly = true)
     override fun getByUid(calculationUid: UUID): CalculationResponse =
         calculationRepository.findByUid(calculationUid)
-            .map {
-                CalculationResponse(
-                    uid = it.uid,
-                    name = it.name,
-                    description = it.description,
-                    type = it.type,
-                    startDate = it.startDate?.toLocalDate(),
-                    status = calculationStatusService.getLastStatus(it.uid!!),
-                    periods = calculationPeriodService.findByCalculationUid(it.uid!!),
-                    macroUid = it.macroUid,
-                    transferRateUid = it.transferRateUid,
-                    productScenarioUid = it.productScenarioUid,
-                    createdDate = it.createdDate,
-                    modifiedDate = it.modifiedDate
-                )
-            }
+            .map { buildCalculationResponse(it) }
             .orElseThrow { EntityNotFoundException("Calculation '$calculationUid' not found") }
 
     @Transactional
@@ -60,4 +45,20 @@ class CalculationServiceImpl(
 
         return calculation
     }
+
+    private fun buildCalculationResponse(calculation: Calculation) =
+        CalculationResponse(
+            uid = calculation.uid,
+            name = calculation.name,
+            description = calculation.description,
+            type = calculation.type,
+            startDate = calculation.startDate,
+            status = calculationStatusService.getLastStatus(calculation.uid!!),
+            periods = calculationPeriodService.findByCalculationUid(calculation.uid!!),
+            macroUid = calculation.macroUid,
+            transferRateUid = calculation.transferRateUid,
+            productScenarioUid = calculation.productScenarioUid,
+            createdDate = calculation.createdDate,
+            modifiedDate = calculation.modifiedDate
+        )
 }
