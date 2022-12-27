@@ -10,4 +10,5 @@ data class ServicesUrlProperties(
     val transferRateUrl: String? = null,
     val productScenarioUrl: String? = null,
     val drpCommandUrl: String? = null,
+    val balanceResultUrl: String? = null,
 )

@@ -41,6 +41,5 @@ class CopyDataToStageAction(
         productScenarioClient
             .migrate(calculationUid, productScenarioUid, periods)
             .let { execution.setVariable(PRODUCT_SCENARIO_TABLES, toJson(it.etlTableList)) }
-
     }
 }

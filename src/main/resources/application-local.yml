@@ -13,3 +13,4 @@ services:
   transfer-rate-url: http://localhost:9999
   product-scenario-url: http://localhost:9999
   drp-command-url: http://localhost:9999
+  balance-result-url: http://localhost:9999

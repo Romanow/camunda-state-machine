@@ -1,4 +1,4 @@
-package ru.romanow.camunda.actions
+package ru.romanow.camunda.service
 
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.ExecutionListener
@@ -6,7 +6,6 @@ import org.camunda.bpm.engine.delegate.Expression
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import ru.romanow.camunda.domain.enums.Status
-import ru.romanow.camunda.service.CalculationStatusService
 import ru.romanow.camunda.utils.CALCULATION_UID
 import ru.romanow.camunda.utils.OPERATION_UID
 import ru.romanow.camunda.utils.get

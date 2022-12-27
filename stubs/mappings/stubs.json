@@ -4,7 +4,7 @@
       "id": "c9d70302-4234-4780-b371-50360fc169cd",
       "name": "DRP Command copy params",
       "request": {
-        "urlPath": "/api/v1/drp/cash-flow/copy-params",
+        "urlPath": "/api/v1/drp/copy-params",
         "method": "POST",
         "headers": {
           "Content-Type": {

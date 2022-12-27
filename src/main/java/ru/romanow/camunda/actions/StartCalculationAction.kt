@@ -7,13 +7,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.romanow.camunda.domain.CalculationPeriod
 import ru.romanow.camunda.models.CalculationParametersTables
+import ru.romanow.camunda.models.StartCalculationCommand
 import ru.romanow.camunda.service.CalculationService
 import ru.romanow.camunda.service.clients.DrpCommandClient
-import ru.romanow.camunda.utils.CALCULATION_PARAMETERS_TABLES
-import ru.romanow.camunda.utils.CALCULATION_UID
-import ru.romanow.camunda.utils.fromJson
-import ru.romanow.camunda.utils.get
-import java.time.LocalDate
+import ru.romanow.camunda.utils.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.stream.Collectors
@@ -31,8 +28,7 @@ class StartCalculationAction(
             fromJson(get(execution, CALCULATION_PARAMETERS_TABLES))
 
         val calculation = calculationService.getByUid(calculationUid)
-
-        val factDate: LocalDate = calculation.getStartDate().toLocalDate()
+        val factDate = calculation.createdDate!!.toLocalDate()
 
         val balanceProductConfs: List<StartCalculationCommand.Settings.BalanceProductConf> = commandSettingProperties
             .getBalanceProductConf()
@@ -53,22 +49,24 @@ class StartCalculationAction(
             .setBalanceFlag(commandSettingProperties.getBalanceFlag())
             .setTimeBucketSystemCustom(timeBucketSystemCustom)
 
+        val calculationParametersTables = buildCalculationParametersTables(calculationParametersTables)
         val request = StartCalculationCommand(
-            calculationVersionEntity.getUid(),
-            settings,
-            formCalculationParametersTablesEntity(response.getCalculationParametersTables()))
+            solveId = calculationUid,
+            settings = settings,
+            calculationParametersTables = calculationParametersTables
+        )
 
-        val operationUid = drpCommandClient.cfStartCashFlow(request)
+        val operationUid = drpCommandClient.startCalculation(request)
 
+        execution.setVariable(OPERATION_UID, operationUid)
     }
 
-    private fun formCalculationParametersTablesEntity(incomingCalculationParametersTables: Map<String, String>): CalculationParametersTables {
+    private fun buildCalculationParametersTables(incomingCalculationParametersTables: Map<String, String>): CalculationParametersTables {
         val tablesPath = mutableMapOf<String, String>()
 
         //todo получать пути таблиц у холдеров, а не из конфигов
         commandTablesProperties.getTables()
-            .forEach { key, path ->   // commandTablesProperties.getTables(): { "issues_weight” : "calmdb_dev3.product_scenario_staged.cf_product_scenario_issues_weight" }
-                tablesPath.put(path, key)
+            .forEach { key, path -> tablesPath.put(path, key)
             }
         val outgoingCalculationParametersTables = mutableMapOf<String, String>()
 
@@ -80,7 +78,7 @@ class StartCalculationAction(
         val macro = mutableMapOf<String, String>()
         val transferRate = mutableMapOf<String, String>()
         val products = mutableMapOf<String, String>()
-        val calculationParametersTablesResult = CalculationParametersTables()
+        val tables = CalculationParametersTables()
 
         outgoingCalculationParametersTables
             .forEach { (key: String, tablePath: String) ->
@@ -94,11 +92,11 @@ class StartCalculationAction(
                     INTEREST_MARGIN_RATES -> products[INTEREST_MARGIN_RATES] = tablePath
                 }
             }
-        calculationParametersTablesResult.macro = macro
-        calculationParametersTablesResult.ts = transferRate
-        calculationParametersTablesResult.products = products
+        tables.macro = macro
+        tables.transferRates = transferRate
+        tables.products = products
 
-        return calculationParametersTablesResult
+        return tables
     }
 
     private fun getTbsCodesFromPeriods(periods: List<CalculationPeriod>): List<String> {
