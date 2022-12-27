@@ -2,11 +2,12 @@ server:
   port: 8080
 
 spring:
-  profiles:
-    active: local
-  application:
-    name: cashflow
+  profiles.active: local
+  application.name: cashflow
   main.banner-mode: off
+  jpa:
+    hibernate.ddl-auto: update
+    open-in-view: false
 
 management:
   endpoint:
@@ -42,3 +43,35 @@ services:
   product-scenario-url: ${PRODUCT_SCENARIO_URL:}
   drp-command-url: ${DRP_COMMAND_URL:}
   balance-result-url: ${BALANCE_RESULT_URL:}
+
+reverse.etl:
+  database: cashflow
+  schema: public
+  table: data
+
+command:
+  tables:
+    fxrate: "fxrate"
+    market-index: "market-index"
+    ftp: "ftp"
+    volume-forecast: "volume-forecast"
+    issues-weight: "issues-weight"
+    issues-weight-distribution: "issues-weight-distribution"
+    interest-margin-rates: "interest-margin-rates"
+  settings:
+    balance-product-config:
+      - kul
+      - dul
+      - kfl_agg
+      - vfl
+    deal-attributes:
+      - bal_num,
+      - segment
+      - lv25_product_bp_nm
+    report-attributes:
+      - bal_num,
+      - segment
+      - lv25_product_bp_nm
+      - source_cd
+    time-bucket-system-type: INTERVAL_BOUNDARIES_TYPE
+    balance-flag: 1

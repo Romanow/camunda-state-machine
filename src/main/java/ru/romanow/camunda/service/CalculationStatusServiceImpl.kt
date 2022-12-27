@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.romanow.camunda.domain.CalculationStatus
 import ru.romanow.camunda.domain.enums.Status
-import ru.romanow.camunda.models.CalculationStatusResponse
 import ru.romanow.camunda.repository.CalculationRepository
 import ru.romanow.camunda.repository.CalculationStatusRepository
 import ru.romanow.camunda.utils.OPERATION_UID
@@ -19,7 +18,7 @@ class CalculationStatusServiceImpl(
 ) : CalculationStatusService {
 
     @Transactional
-    override fun create(calculationUid: UUID, status: Status, opts: Map<String, String>): CalculationStatus {
+    override fun create(calculationUid: UUID, status: Status, opts: Map<String, String?>): CalculationStatus {
         val calculation = calculationRepository.findByUid(calculationUid)
             .orElseThrow { EntityNotFoundException("Calculation '$calculationUid' not found") }
 
@@ -31,15 +30,9 @@ class CalculationStatusServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getLastStatus(calculationUid: UUID) =
+    override fun getLastStatus(calculationUid: UUID): String =
         calculationStatusRepository
-            .getLastStatus(calculationUid, Pageable.ofSize(1))
+            .getStatuses(calculationUid, Pageable.ofSize(1))
             .first()
-            .let {
-                CalculationStatusResponse(
-                    status = it.status,
-                    operationUid = it.operationUid,
-                    createdDate = it.createdDate
-                )
-            }
+            .status!!.name
 }

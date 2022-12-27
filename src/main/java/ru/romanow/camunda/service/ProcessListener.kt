@@ -21,8 +21,8 @@ class ProcessListener(
     private var operationUid: Expression? = null
 
     override fun notify(execution: DelegateExecution) {
-        val statusValue = status?.getValue(execution).toString()
-        val operationUidValue = operationUid?.getValue(execution).toString()
+        val statusValue: String = status?.getValue(execution).toString()
+        val operationUidValue: UUID? = if (operationUid != null) get(execution, OPERATION_UID) else null
 
         val calculationUid: UUID = get(execution, CALCULATION_UID)
 
@@ -31,7 +31,7 @@ class ProcessListener(
         calculationStatusService.create(
             calculationUid = calculationUid,
             status = Status.valueOf(statusValue),
-            mapOf(OPERATION_UID to operationUidValue)
+            mapOf(OPERATION_UID to operationUidValue.toString())
         )
     }
 }

@@ -14,7 +14,7 @@ typealias CustomPostgresContainer = PostgreSQLContainer<*>
 class DatabaseTestConfiguration {
     companion object {
         private const val POSTGRES_IMAGE = "postgres:15-alpine"
-        private const val DATABASE_NAME = "fsm"
+        private const val DATABASE_NAME = "cashflow"
         private const val USERNAME = "program"
         private const val PASSWORD = "test"
     }

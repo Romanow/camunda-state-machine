@@ -15,7 +15,10 @@ class BalanceResultClient(
 
     fun migrate(calculationUid: UUID) =
         webClient.post()
-            .uri("${servicesUrlProperties.macroScenarioUrl}/api/v1/balance/migration")
+            .uri("${servicesUrlProperties.macroScenarioUrl}/api/v1/balance/migration") {
+                it.queryParam("solveId", calculationUid)
+                    .build()
+            }
             .retrieve()
             .onStatus({ it.isError }) { response -> buildEx(response) { RestClientException(it) } }
             .bodyToMono(UUID::class.java)

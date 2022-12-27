@@ -1,6 +1,119 @@
 {
   "mappings": [
     {
+      "id": "d03ff91e-719c-43d5-9ef6-bac1765d1898",
+      "name": "Balance Result Holder migrate",
+      "request": {
+        "urlPath": "/api/v1/balance/migration",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          }
+        },
+        "queryParameters": {
+          "solveId": {
+            "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"9ee0fd40-77d7-4fb8-9ef2-2f1e56bb82cc\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "d03ff91e-719c-43d5-9ef6-bac1765d1898",
+      "persistent": true
+    },
+    {
+      "id": "65f089f0-694b-499a-b8ff-5897f1000413",
+      "name": "DRP Command start Reverse ETL process",
+      "request": {
+        "url": "/api/v1/drp/cash-flow/load-calc-result",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "equalTo": "application/json"
+          }
+        },
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": {
+              "expression": "solveId",
+              "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            }
+          },
+          {
+            "matchesJsonPath": {
+              "expression": "aggregationReportTableName",
+              "equalTo": "data"
+            }
+          },
+          {
+            "matchesJsonPath": {
+              "expression": "targetReportTableName",
+              "equalTo": "cashflow.public.data"
+            }
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "\"0a117ded-a9a4-4565-9ec7-f4b9f487c8c7\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "65f089f0-694b-499a-b8ff-5897f1000413",
+      "persistent": true
+    },
+    {
+      "id": "7f7ab527-84cd-47ee-9d61-e4fb084a95fb",
+      "name": "DRP Command Calculation start",
+      "request": {
+        "url": "/api/v1/drp/cash-flow/start-calc",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "equalTo": "application/json"
+          }
+        },
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": {
+              "expression": "solveId",
+              "matches": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            }
+          },
+          {
+            "matchesJsonPath": {
+              "expression": "calculationParametersTables",
+              "equalTo": "{\"macro\":{},\"transferRates\":{},\"products\":{}}"
+            }
+          },
+          {
+            "matchesJsonPath": {
+              "expression": "settings",
+              "equalTo": "{\"balanceProductConfigs\":[{\"productType\":\"kul\"},{\"productType\":\"dul\"},{\"productType\":\"kfl_agg\"},{\"productType\":\"vfl\"}],\"dealAttributes\":[\"bal_num,\",\"segment\",\"lv25_product_bp_nm\"],\"reportAttributes\":[\"bal_num,\",\"segment\",\"lv25_product_bp_nm\",\"source_cd\"],\"timeBucketSystemCustom\":{\"tbsType\":\"INTERVAL_BOUNDARIES_TYPE\",\"tbsCodes\":[\"0D-1M\",\"1M-INF\"]},\"reportDate\":\"31.10.2022\",\"balanceFlag\":\"1\"}"
+            }
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "\"73fd39a5-5f6c-430b-afd8-c6908a8541f4\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "7f7ab527-84cd-47ee-9d61-e4fb084a95fb",
+      "persistent": true,
+      "priority": 5,
+      "postServeActions": []
+    },
+    {
       "id": "c9d70302-4234-4780-b371-50360fc169cd",
       "name": "DRP Command copy params",
       "request": {
@@ -157,6 +270,6 @@
     }
   ],
   "meta": {
-    "total": 4
+    "total": 7
   }
 }

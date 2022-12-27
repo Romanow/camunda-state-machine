@@ -18,6 +18,7 @@ idea {
 ext {
     camundaVersion = "7.16.0"
     openApiVersion = "1.6.14"
+    wireMockVersion = "2.31.0"
     testCntainerVersion = "1.16.0"
 }
 
@@ -51,6 +52,7 @@ dependencies {
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.testcontainers:postgresql:$testCntainerVersion"
+    testImplementation "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
 }
 
 test {

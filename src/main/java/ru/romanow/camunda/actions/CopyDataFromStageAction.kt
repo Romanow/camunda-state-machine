@@ -18,7 +18,7 @@ class CopyDataFromStageAction(
 
     override fun execute(execution: DelegateExecution) {
         val calculationUid: UUID = get(execution, CALCULATION_UID)
-        logger.info("Request to DRP Command to init Reverse ETL process '{}'", calculationUid)
+        logger.info("Request to holder to move from stage schema '{}'", calculationUid)
         val operationUid = balanceResultClient.migrate(calculationUid);
         execution.setVariable(OPERATION_UID, operationUid)
     }

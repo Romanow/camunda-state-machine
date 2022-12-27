@@ -7,6 +7,7 @@ import ru.romanow.camunda.config.properties.ServicesUrlProperties
 import ru.romanow.camunda.exceptions.RestClientException
 import ru.romanow.camunda.exceptions.buildEx
 import ru.romanow.camunda.models.LoadCalculationResultCommand
+import ru.romanow.camunda.models.StartCalculationCommand
 import ru.romanow.camunda.models.UploadCashflowParametersCommand
 import java.util.*
 
@@ -18,7 +19,7 @@ class DrpCommandClient(
 
     fun copyParams(request: UploadCashflowParametersCommand) =
         webClient.post()
-            .uri("${servicesUrlProperties.drpCommandUrl}/api/v1/drp/copy-params")
+            .uri("${servicesUrlProperties.drpCommandUrl}/api/v1/drp/cash-flow/copy-params")
             .body(BodyInserters.fromValue(request))
             .retrieve()
             .onStatus({ it.isError }) { response -> buildEx(response) { RestClientException(it) } }
@@ -27,16 +28,16 @@ class DrpCommandClient(
 
     fun loadResult(request: LoadCalculationResultCommand) =
         webClient.post()
-            .uri("${servicesUrlProperties.drpCommandUrl}/api/v1/drp/cf-load-calc-result")
+            .uri("${servicesUrlProperties.drpCommandUrl}/api/v1/drp/cash-flow/load-calc-result")
             .body(BodyInserters.fromValue(request))
             .retrieve()
             .onStatus({ it.isError }) { response -> buildEx(response) { RestClientException(it) } }
             .bodyToMono(UUID::class.java)
             .block()!!
 
-    fun startCalculation(request: LoadCalculationResultCommand) =
+    fun startCalculation(request: StartCalculationCommand) =
         webClient.post()
-            .uri("${servicesUrlProperties.drpCommandUrl}/api/v1/drp/cf-start-calc")
+            .uri("${servicesUrlProperties.drpCommandUrl}/api/v1/drp/cash-flow/start-calc")
             .body(BodyInserters.fromValue(request))
             .retrieve()
             .onStatus({ it.isError }) { response -> buildEx(response) { RestClientException(it) } }

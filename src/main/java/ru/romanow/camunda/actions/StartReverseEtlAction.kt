@@ -24,7 +24,7 @@ class StartReverseEtlAction(
         val calculationUid: UUID = get(execution, CALCULATION_UID)
         val aggregationReportTableName: String = get(execution, AGGREGATION_REPORT_TABLE_NAME)
 
-        logger.info("Request to DRP Command to start calculation '{}'", calculationUid)
+        logger.info("Request to DRP Command to start Reverse ETL process for '{}'", calculationUid)
 
         val request = LoadCalculationResultCommand(
             solveId = calculationUid,

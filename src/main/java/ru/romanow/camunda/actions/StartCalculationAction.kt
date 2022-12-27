@@ -5,55 +5,55 @@ import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.romanow.camunda.domain.CalculationPeriod
-import ru.romanow.camunda.models.CalculationParametersTables
-import ru.romanow.camunda.models.StartCalculationCommand
+import ru.romanow.camunda.config.properties.CommandProperties
+import ru.romanow.camunda.models.*
 import ru.romanow.camunda.service.CalculationService
 import ru.romanow.camunda.service.clients.DrpCommandClient
 import ru.romanow.camunda.utils.*
 import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.stream.Collectors
 
 @Service("StartCalculationAction")
 class StartCalculationAction(
     private val calculationService: CalculationService,
     private val drpCommandClient: DrpCommandClient,
+    private val commandProperties: CommandProperties,
 ) : JavaDelegate {
     private val logger = LoggerFactory.getLogger(CopyDataToStageAction::class.java)
 
     override fun execute(execution: DelegateExecution) {
         val calculationUid: UUID = get(execution, CALCULATION_UID)
-        val calculationParametersTables: Map<String, String> =
+        val incomingTables: Map<String, String> =
             fromJson(get(execution, CALCULATION_PARAMETERS_TABLES))
 
         val calculation = calculationService.getByUid(calculationUid)
-        val factDate = calculation.createdDate!!.toLocalDate()
 
-        val balanceProductConfs: List<StartCalculationCommand.Settings.BalanceProductConf> = commandSettingProperties
-            .getBalanceProductConf()
-            .stream()
-            .filter { cs: CharSequence? -> StringUtils.isNotEmpty(cs) }
-            .map { StartCalculationCommand.Settings.BalanceProductConf() }
-            .collect(Collectors.toList())
+        val balanceProductConfigs = commandProperties
+            .settings!!
+            .balanceProductConfig!!
+            .filter { StringUtils.isNotEmpty(it) }
+            .map { BalanceProductConfig(it) }
 
-        val timeBucketSystemCustom: StartCalculationCommand.TimeBucketSystemCustom = TimeBucketSystemCustom()
-            .setTbsCodes(getTbsCodesFromPeriods(calculationEntity.getCalculationPeriods()))
-            .setTbsType(commandSettingProperties.getTimeBucketSystemType())
+        val timeBucketSystemCustom = TimeBucketSystemCustom(
+            tbsCodes = buildTableCodesFromPeriods(calculation.periods!!),
+            tbsType = commandProperties.settings?.timeBucketSystemType
+        )
 
-        val settings: StartCalculationCommand.Settings = Settings()
-            .setBalanceProductConf(balanceProductConfs)
-            .setDealAttributes(commandSettingProperties.getDealAttributes())
-            .setReportAttributes(commandSettingProperties.getReportAttributes())
-            .setReportDate(factDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-            .setBalanceFlag(commandSettingProperties.getBalanceFlag())
-            .setTimeBucketSystemCustom(timeBucketSystemCustom)
+        val settings = StartCalculationSettings(
+            balanceProductConfigs = balanceProductConfigs,
+            dealAttributes = commandProperties.settings?.dealAttributes,
+            reportAttributes = commandProperties.settings?.reportAttributes,
+            reportDate = calculation.startDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+            balanceFlag = commandProperties.settings?.balanceFlag,
+            timeBucketSystemCustom = timeBucketSystemCustom
+        )
 
-        val calculationParametersTables = buildCalculationParametersTables(calculationParametersTables)
+        logger.info("Request to DRP Command to start calculation '{}'", calculationUid)
+
         val request = StartCalculationCommand(
             solveId = calculationUid,
             settings = settings,
-            calculationParametersTables = calculationParametersTables
+            calculationParametersTables = buildCalculationParametersTables(incomingTables)
         )
 
         val operationUid = drpCommandClient.startCalculation(request)
@@ -63,18 +63,11 @@ class StartCalculationAction(
 
     private fun buildCalculationParametersTables(incomingTables: Map<String, String>): CalculationParametersTables {
         val tablesPath = mutableMapOf<String, String>()
-
-        commandTablesProperties.getTables()
-            .forEach { key, path ->
-                tablesPath.put(path, key)
-            }
+            .also { it.putAll(commandProperties.tables!!) }
 
         val tables = mutableMapOf<String, String>()
-        incomingTables
-            .forEach { (postgresTablePath: String, hadoopTablePath: String) ->
-                val key = tablesPath[postgresTablePath]
-                tables[key] = hadoopTablePath
-            }
+        incomingTables.forEach { (p, h) -> tables[tablesPath[p]!!] = h }
+
         val macro = mutableMapOf<String, String>()
         val transferRate = mutableMapOf<String, String>()
         val products = mutableMapOf<String, String>()
@@ -98,7 +91,7 @@ class StartCalculationAction(
         return resultTables
     }
 
-    private fun getTbsCodesFromPeriods(periods: List<CalculationPeriod>): List<String> {
+    private fun buildTableCodesFromPeriods(periods: List<PeriodResponse>): List<String> {
         val result: MutableList<String> = ArrayList()
         val lastIndex = periods.size - 1
         val firstMark = periods[0].mark
@@ -115,11 +108,11 @@ class StartCalculationAction(
 
     companion object {
         private const val FXRATE = "fxrate"
-        private const val MARKET_INDEX = "market_index"
+        private const val MARKET_INDEX = "market-index"
         private const val FTP = "ftp"
-        private const val VOLUME_FORECAST = "volume_forecast"
-        private const val ISSUES_WEIGHT = "issues_weight"
-        private const val ISSUES_WEIGHT_DISTRIBUTION = "issues_weight_distribution"
-        private const val INTEREST_MARGIN_RATES = "interest_margin_rates"
+        private const val VOLUME_FORECAST = "volume-forecast"
+        private const val ISSUES_WEIGHT = "issues-weight"
+        private const val ISSUES_WEIGHT_DISTRIBUTION = "issues-weight-distribution"
+        private const val INTEREST_MARGIN_RATES = "interest-margin-rates"
     }
 }

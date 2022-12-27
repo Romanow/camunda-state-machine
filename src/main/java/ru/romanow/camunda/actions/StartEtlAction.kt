@@ -27,7 +27,7 @@ class StartEtlAction(
                 .flatten()
                 .map { "${it.database}.${it.schema}.${it.name}" }
 
-        logger.info("Request to DRP Command to init ETL process for tables '{}'", tables)
+        logger.info("Request to DRP Command to start ETL process for tables '{}'", tables)
 
         val request = UploadCashflowParametersCommand(
             solveId = calculationUid,

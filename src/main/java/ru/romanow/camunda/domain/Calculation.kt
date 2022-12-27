@@ -4,6 +4,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import ru.romanow.camunda.domain.enums.CalculationType
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -25,6 +26,9 @@ data class Calculation(
 
     @Column(name = "description")
     var description: String? = null,
+
+    @Column(name = "start_date", nullable = false)
+    var startDate: LocalDateTime? = null,
 
     @Column(name = "type", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
@@ -66,6 +70,6 @@ data class Calculation(
     }
 
     override fun toString(): String {
-        return "Calculation(id=$id, uid=$uid, name=$name, description=$description, type=$type, productScenarioUid=$productScenarioUid, transferRateUid=$transferRateUid, macroUid=$macroUid, createdDate=$createdDate, modifiedDate=$modifiedDate)"
+        return "Calculation(id=$id, uid=$uid, name=$name, description=$description, startDate=$startDate, type=$type, productScenarioUid=$productScenarioUid, transferRateUid=$transferRateUid, macroUid=$macroUid, createdDate=$createdDate, modifiedDate=$modifiedDate)"
     }
 }

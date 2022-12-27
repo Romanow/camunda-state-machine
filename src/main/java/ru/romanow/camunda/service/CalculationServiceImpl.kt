@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional
 import ru.romanow.camunda.domain.Calculation
 import ru.romanow.camunda.domain.enums.CalculationType
 import ru.romanow.camunda.models.CalculationResponse
-import ru.romanow.camunda.models.CalculationStatusResponse
 import ru.romanow.camunda.models.CreateCalculationRequest
 import ru.romanow.camunda.repository.CalculationRepository
 import ru.romanow.camunda.utils.UUIDGenerator
@@ -31,8 +30,12 @@ class CalculationServiceImpl(
                     name = it.name,
                     description = it.description,
                     type = it.type,
+                    startDate = it.startDate?.toLocalDate(),
                     status = calculationStatusService.getLastStatus(it.uid!!),
                     periods = calculationPeriodService.findByCalculationUid(it.uid!!),
+                    macroUid = it.macroUid,
+                    transferRateUid = it.transferRateUid,
+                    productScenarioUid = it.productScenarioUid,
                     createdDate = it.createdDate,
                     modifiedDate = it.modifiedDate
                 )
@@ -46,9 +49,10 @@ class CalculationServiceImpl(
             name = request.name,
             description = request.description,
             type = CalculationType.CASHFLOW,
-            macroUid = generator.generate(),
-            transferRateUid = generator.generate(),
-            productScenarioUid = generator.generate()
+            startDate = request.startDate,
+            macroUid = request.macroUid,
+            transferRateUid = request.transferRateUid,
+            productScenarioUid = request.productScenarioUid
         )
 
         calculation = calculationRepository.save(calculation)
