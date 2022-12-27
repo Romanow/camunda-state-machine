@@ -61,42 +61,41 @@ class StartCalculationAction(
         execution.setVariable(OPERATION_UID, operationUid)
     }
 
-    private fun buildCalculationParametersTables(incomingCalculationParametersTables: Map<String, String>): CalculationParametersTables {
+    private fun buildCalculationParametersTables(incomingTables: Map<String, String>): CalculationParametersTables {
         val tablesPath = mutableMapOf<String, String>()
 
-        //todo получать пути таблиц у холдеров, а не из конфигов
         commandTablesProperties.getTables()
-            .forEach { key, path -> tablesPath.put(path, key)
+            .forEach { key, path ->
+                tablesPath.put(path, key)
             }
-        val outgoingCalculationParametersTables = mutableMapOf<String, String>()
 
-        incomingCalculationParametersTables
+        val tables = mutableMapOf<String, String>()
+        incomingTables
             .forEach { (postgresTablePath: String, hadoopTablePath: String) ->
                 val key = tablesPath[postgresTablePath]
-                outgoingCalculationParametersTables[key] = hadoopTablePath
+                tables[key] = hadoopTablePath
             }
         val macro = mutableMapOf<String, String>()
         val transferRate = mutableMapOf<String, String>()
         val products = mutableMapOf<String, String>()
-        val tables = CalculationParametersTables()
+        val resultTables = CalculationParametersTables()
 
-        outgoingCalculationParametersTables
-            .forEach { (key: String, tablePath: String) ->
-                when (key.lowercase()) {
-                    FXRATE -> macro[FXRATE] = tablePath
-                    MARKET_INDEX -> macro[MARKET_INDEX] = tablePath
-                    FTP -> transferRate[FTP] = tablePath
-                    VOLUME_FORECAST -> products[VOLUME_FORECAST] = tablePath
-                    ISSUES_WEIGHT -> products[ISSUES_WEIGHT] = tablePath
-                    ISSUES_WEIGHT_DISTRIBUTION -> products[ISSUES_WEIGHT_DISTRIBUTION] = tablePath
-                    INTEREST_MARGIN_RATES -> products[INTEREST_MARGIN_RATES] = tablePath
-                }
+        tables.forEach { (key: String, tablePath: String) ->
+            when (key.lowercase()) {
+                FXRATE -> macro[FXRATE] = tablePath
+                MARKET_INDEX -> macro[MARKET_INDEX] = tablePath
+                FTP -> transferRate[FTP] = tablePath
+                VOLUME_FORECAST -> products[VOLUME_FORECAST] = tablePath
+                ISSUES_WEIGHT -> products[ISSUES_WEIGHT] = tablePath
+                ISSUES_WEIGHT_DISTRIBUTION -> products[ISSUES_WEIGHT_DISTRIBUTION] = tablePath
+                INTEREST_MARGIN_RATES -> products[INTEREST_MARGIN_RATES] = tablePath
             }
-        tables.macro = macro
-        tables.transferRates = transferRate
-        tables.products = products
+        }
+        resultTables.macro = macro
+        resultTables.transferRates = transferRate
+        resultTables.products = products
 
-        return tables
+        return resultTables
     }
 
     private fun getTbsCodesFromPeriods(periods: List<CalculationPeriod>): List<String> {
