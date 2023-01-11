@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1y0qeh8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1y0qeh8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:message id="Message_3rcd9pc" name="etl result event" />
   <bpmn:message id="Message_09588ep" name="calculation result event" />
   <bpmn:message id="Message_0d4gn57" name="error event" />
@@ -28,6 +28,9 @@
             <camunda:field name="status">
               <camunda:string>ETL_COMPLETED</camunda:string>
             </camunda:field>
+            <camunda:field name="needOperationUid">
+              <camunda:string>false</camunda:string>
+            </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_0g6m4ls</bpmn:incoming>
@@ -38,6 +41,9 @@
           <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
             <camunda:field name="status">
               <camunda:string>ETL_START</camunda:string>
+            </camunda:field>
+            <camunda:field name="needOperationUid">
+              <camunda:string>false</camunda:string>
             </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
@@ -52,8 +58,8 @@
             <camunda:field name="status">
               <camunda:string>ETL_SENT_TO_DRP</camunda:string>
             </camunda:field>
-            <camunda:field name="operationUid">
-              <camunda:expression>${operationUid}</camunda:expression>
+            <camunda:field name="needOperationUid">
+              <camunda:string>true</camunda:string>
             </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
@@ -92,6 +98,9 @@
           <camunda:field name="status">
             <camunda:string>CALCULATION_STARTED</camunda:string>
           </camunda:field>
+          <camunda:field name="needOperationUid">
+            <camunda:string>false</camunda:string>
+          </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1c1u91s</bpmn:outgoing>
@@ -102,6 +111,9 @@
         <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
           <camunda:field name="status">
             <camunda:string>DATA_COPIED_TO_STAGED</camunda:string>
+          </camunda:field>
+          <camunda:field name="needOperationUid">
+            <camunda:string>false</camunda:string>
           </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>
@@ -117,6 +129,9 @@
             <camunda:field name="status">
               <camunda:string>CALCULATION_COMPLETED</camunda:string>
             </camunda:field>
+            <camunda:field name="needOperationUid">
+              <camunda:string>false</camunda:string>
+            </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_07s0kv7</bpmn:incoming>
@@ -127,6 +142,9 @@
           <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
             <camunda:field name="status">
               <camunda:string>CALCULATION_START</camunda:string>
+            </camunda:field>
+            <camunda:field name="needOperationUid">
+              <camunda:string>false</camunda:string>
             </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
@@ -162,8 +180,8 @@
             <camunda:field name="status">
               <camunda:string>CALCULATION_SENT_TO_DRP</camunda:string>
             </camunda:field>
-            <camunda:field name="operationUid">
-              <camunda:expression>${operationUid}</camunda:expression>
+            <camunda:field name="needOperationUid">
+              <camunda:string>true</camunda:string>
             </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
@@ -181,6 +199,9 @@
             <camunda:field name="status">
               <camunda:string>REVERSED_ETL_START</camunda:string>
             </camunda:field>
+            <camunda:field name="needOperationUid">
+              <camunda:string>false</camunda:string>
+            </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
         <bpmn:outgoing>Flow_1a14uyh</bpmn:outgoing>
@@ -191,6 +212,9 @@
           <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
             <camunda:field name="status">
               <camunda:string>REVERSED_ETL_COMPLETED</camunda:string>
+            </camunda:field>
+            <camunda:field name="needOperationUid">
+              <camunda:string>false</camunda:string>
             </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
@@ -225,8 +249,8 @@
             <camunda:field name="status">
               <camunda:string>REVERSED_ETL_SENT_TO_DRP</camunda:string>
             </camunda:field>
-            <camunda:field name="operationUid">
-              <camunda:expression>${operationUid}</camunda:expression>
+            <camunda:field name="needOperationUid">
+              <camunda:string>true</camunda:string>
             </camunda:field>
           </camunda:executionListener>
         </bpmn:extensionElements>
@@ -239,6 +263,9 @@
         <camunda:executionListener delegateExpression="#{ProcessListener}" event="end">
           <camunda:field name="status">
             <camunda:string>CALCULATION_FINISHED</camunda:string>
+          </camunda:field>
+          <camunda:field name="needOperationUid">
+            <camunda:string>false</camunda:string>
           </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>
@@ -266,8 +293,8 @@
           <camunda:field name="status">
             <camunda:string>DATA_COPIED_FROM_STAGED</camunda:string>
           </camunda:field>
-          <camunda:field name="operationUid">
-            <camunda:expression>${operationUid}</camunda:expression>
+          <camunda:field name="needOperationUid">
+            <camunda:string>true</camunda:string>
           </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>

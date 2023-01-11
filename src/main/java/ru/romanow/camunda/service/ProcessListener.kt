@@ -18,20 +18,24 @@ class ProcessListener(
     private val logger = LoggerFactory.getLogger(ProcessListener::class.java)
 
     private var status: Expression? = null
-    private var operationUid: Expression? = null
+    private var needOperationUid: Expression? = null
 
     override fun notify(execution: DelegateExecution) {
         val statusValue: String = status?.getValue(execution).toString()
-        val operationUidValue: UUID? = if (operationUid != null) get(execution, OPERATION_UID) else null
-
         val calculationUid: UUID = get(execution, CALCULATION_UID)
+        val operationUid: UUID? =
+            if (needOperationUid != null && needOperationUid?.getValue(execution).toString().toBoolean()) {
+                get(execution, CALCULATION_UID)
+            } else {
+                null
+            }
 
         logger.info("Process '{}' set status '{}'", statusValue, calculationUid)
 
         calculationStatusService.create(
             calculationUid = calculationUid,
             status = Status.valueOf(statusValue),
-            mapOf(OPERATION_UID to operationUidValue.toString())
+            mapOf(OPERATION_UID to operationUid?.toString())
         )
     }
 }
