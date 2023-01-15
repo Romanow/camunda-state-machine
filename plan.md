@@ -34,7 +34,7 @@ $ docker compose up postgres wiremock -d
 
 $ ./gradlew bootRun --args='--spring.profiles.active=local'
 
-$ newman run -e postman/environment.json postman/collection.json
+$ newman run -e postman/local-environment.json postman/collection.json
 ```
 
 ### Шаги реализации в calm-core

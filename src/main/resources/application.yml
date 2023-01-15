@@ -15,7 +15,7 @@ management:
   endpoints:
     web:
       base-path: /manage
-      exposure.include: info,health,loggers
+      exposure.include: info,health,loggers,prometheus
   health.diskspace.enabled: false
   endpoint.health.show-details: always
   info.git.mode: simple

@@ -1,20 +1,9 @@
-image:
-  pullPolicy: IfNotPresent
-  repository: postgres
-  tag: 15
-
 ports:
-  internal: 5432
   external: 32432
 
 users:
   - name: program
     password: test
-
-defaultDatabase:
-  name: postgres
-  user: postgres
-  password: postgres
 
 databases:
   - name: cashflow

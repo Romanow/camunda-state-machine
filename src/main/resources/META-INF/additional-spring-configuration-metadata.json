@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "services",
+      "type": "ru.romanow.camunda.config.properties.ServicesUrlProperties",
+      "sourceType": "ru.romanow.camunda.config.properties.ServicesUrlProperties"
+    },
+    {
+      "name": "command",
+      "type": "ru.romanow.camunda.config.properties.CommandProperties",
+      "sourceType": "ru.romanow.camunda.config.properties.CommandProperties"
+    },
+    {
+      "name": "reverse.etl",
+      "type": "ru.romanow.camunda.config.properties.ReverseEtlProperties",
+      "sourceType": "ru.romanow.camunda.config.properties.ReverseEtlProperties"
+    }
+  ],
+  "properties": []
+}
