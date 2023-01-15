@@ -94,9 +94,8 @@ $ ./scripts/load-images.sh
 
 ```shell
 $ helm repo add romanow https://romanow.github.io/helm-charts/
-
+$ helm repo add deliveryhero https://charts.deliveryhero.io/
 $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-
 $ helm repo update
 ```
 
@@ -118,6 +117,10 @@ $ helm install grafana -f grafana/values.yaml romanow/grafana
 $ helm install postgres -f postgres/values.yaml romanow/postgres
 
 $ helm install camunda-state-machine -f camunda/values.yaml romanow/java-service
+
+$ kubectl create configmap services-stubs-mappings --from-file=../stubs/mappings
+$ kubectl create configmap services-stubs-files --from-file=../stubs/__files
+$ helm install wiremock -f wiremock/values.yaml deliveryhero/wiremock
 ```
 
 Запускаем end-to-end тесты (папка [`tests/postman`](tests/postman)):

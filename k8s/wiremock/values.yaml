@@ -1,0 +1,28 @@
+image:
+  repository: wiremock/wiremock
+  tag: 2.35.0
+
+consumer:
+  name: my-consumer
+  stubs:
+    services-stubs: /mnt/services-stubs
+
+service:
+  port: 8080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 100m
+    memory: 512Mi
+
+
+java:
+  mms: 64M
+  xms: 256M
+  xmx: 512M
+
+pdb:
+  enabled: false

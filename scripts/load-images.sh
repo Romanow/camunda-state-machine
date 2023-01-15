@@ -5,6 +5,7 @@ version=${1:-v1.0}
 images=(
   "postgres:15"
   "romanowalex/camunda-state-machine:$version"
+  "wiremock/wiremock:2.35.0"
   "influxdb:1.8.4"
   "grafana/grafana:8.3.4"
   "prom/prometheus:v2.40.0"
