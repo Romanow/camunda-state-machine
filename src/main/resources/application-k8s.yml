@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST:postgres}:${DATABASE_PORT:5432}/${DATABASE_NAME:todo_list}
+    username: ${DATABASE_USER:program}
+    password: ${DATABASE_PASSWORD:test}
+    driver-class-name: org.postgresql.Driver
+
+services:
+  macro-scenario-url: http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}
+  transfer-rate-url: http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}
+  product-scenario-url: http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}
+  drp-command-url: http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}
+  balance-result-url: http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}
