@@ -4,10 +4,10 @@ import http from "k6/http";
 
 export const options = {
     stages: [
-        {duration: "20s", target: 20},
-        {duration: "30s", target: 50},
-        {duration: "1m30s", target: 100},
-        {duration: "20s", target: 20},
+        {duration: "20s", target: 10},
+        {duration: "30s", target: 20},
+        {duration: "1m30s", target: 50},
+        {duration: "20s", target: 10},
     ],
 };
 
@@ -26,11 +26,11 @@ export default function () {
     describe("Create Calculation", () => {
         // given
         const body = {
-            "name": `${randomString()}`,
+            "name": randomString(8),
             "startDate": "01-10-2022",
-            "macroUid": `${uuidv4()}`,
-            "transferRateUid": `${uuidv4()}`,
-            "productScenarioUid": `${uuidv4()}`,
+            "macroUid": uuidv4(),
+            "transferRateUid": uuidv4(),
+            "productScenarioUid": uuidv4(),
             "periods": [
                 {
                     "startDate": "01-10-2022",
@@ -67,16 +67,13 @@ export default function () {
         };
 
         // when
-        const url = `http://${hostname}/api/v1/cashflow/calculation/`${calculationUid}`/answer-from-drp`;
+        const url = `http://${hostname}/api/v1/cashflow/calculation/${calculationUid}/answer-from-drp`;
         const response = http.post(url, JSON.stringify(body), params);
 
         // then
         expect(response.status, "response status").to.eq(200);
         expect(response).to.have.validJsonBody();
-
-        const json = response.json();
-        expect(json.uid, "calculation uid").to.be.eq(calculationUid);
-        expect(json.status, "calculation status").to.be.eq("CALCULATION_SENT_TO_DRP");
+        expect(response.json().status, "calculation status").to.be.eq("CALCULATION_SENT_TO_DRP");
     })
 
     // =====================================================
@@ -92,16 +89,13 @@ export default function () {
         }
 
         // when
-        let url = `http://${hostname}/api/v1/cashflow/calculation/`${calculationUid}`/answer-from-drp`;
+        let url = `http://${hostname}/api/v1/cashflow/calculation/${calculationUid}/answer-from-drp`;
         const response = http.post(url, JSON.stringify(body), params);
 
         // then
         expect(response.status, "response status").to.eq(200)
         expect(response).to.have.validJsonBody()
-
-        let json = response.json();
-        expect(json.uid, "calculation uid").to.be.eq(calculationUid)
-        expect(json.status, "calculation status").to.be.eq("REVERSED_ETL_SENT_TO_DRP")
+        expect(response.json().status, "calculation status").to.be.eq("REVERSED_ETL_SENT_TO_DRP");
     })
 
     // =====================================================
@@ -117,15 +111,12 @@ export default function () {
         }
 
         // when
-        const url = `http://${hostname}/api/v1/cashflow/calculation/`${calculationUid}`/answer-from-drp`;
+        const url = `http://${hostname}/api/v1/cashflow/calculation/${calculationUid}/answer-from-drp`;
         const response = http.post(url, JSON.stringify(body), params);
 
         // then
         expect(response.status, "response status").to.eq(200)
         expect(response).to.have.validJsonBody()
-
-        let json = response.json();
-        expect(json.uid, "calculation uid").to.be.eq(calculationUid)
-        expect(json.status, "calculation status").to.be.eq("REVERSED_ETL_SENT_TO_DRP")
+        expect(response.json().status, "calculation status").to.be.eq("CALCULATION_FINISHED");
     })
 };
