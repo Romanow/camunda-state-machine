@@ -1,5 +1,6 @@
 package ru.romanow.camunda.service.clients
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -9,6 +10,7 @@ import ru.romanow.camunda.exceptions.buildEx
 import ru.romanow.camunda.models.EtlResponse
 import ru.romanow.camunda.models.PeriodResponse
 import java.util.*
+import javax.crypto.MacSpi
 
 @Service
 class MacroScenarioClient(

@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:postgres}:${DATABASE_PORT:5432}/${DATABASE_NAME:cashflow}
-    username: ${DATABASE_USER:program}
-    password: ${DATABASE_PASSWORD:test}
+    url: jdbc:postgresql://postgres:5432/cashflow
+    username: program
+    password: test
     driver-class-name: org.postgresql.Driver
 
 services:
-  macro-scenario-url: "http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}"
-  transfer-rate-url: "http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}"
-  product-scenario-url: "http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}"
-  drp-command-url: "http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}"
-  balance-result-url: "http://${WIREMOCK_HOST:wiremock}:${WIREMOCK_PORT:8080}"
+  macro-scenario-url: http://wiremock:8080
+  transfer-rate-url: http://wiremock:8080
+  product-scenario-url: http://wiremock:8080
+  drp-command-url: http://wiremock:8080
+  balance-result-url: http://wiremock:8080
