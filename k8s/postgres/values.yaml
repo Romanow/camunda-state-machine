@@ -9,10 +9,17 @@ databases:
   - name: cashflow
     user: program
 
+config: |-
+  shared_buffers = 256MB
+  effective_cache_size = 768MB
+  maintenance_work_mem = 64MB
+  work_mem = 1310kB
+  wal_buffers = 7864kB
+
 resources:
   requests:
-    cpu: 200m
-    memory: 128Mi
+    cpu: 500m
+    memory: 1024Mi
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 500m
+    memory: 1024Mi

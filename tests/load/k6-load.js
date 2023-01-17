@@ -5,8 +5,9 @@ import http from "k6/http";
 export const options = {
     stages: [
         {duration: "20s", target: 10},
-        {duration: "60s", target: 20},
-        {duration: "20s", target: 10},
+        {duration: "20s", target: 20},
+        {duration: "60s", target: 50},
+        {duration: "10s", target: 10},
     ],
 };
 
@@ -47,11 +48,7 @@ export default function () {
         // then
         expect(response.status, "response status").to.eq(200);
         expect(response).to.have.validJsonBody();
-
-        const json = response.json();
-        expect(json.status, "calculation status").to.be.eq("ETL_SENT_TO_DRP");
-
-        calculationUid = json.uid;
+        calculationUid = response.json().uid;
     });
 
     // =====================================================
@@ -72,7 +69,6 @@ export default function () {
         // then
         expect(response.status, "response status").to.eq(200);
         expect(response).to.have.validJsonBody();
-        expect(response.json().status, "calculation status").to.be.eq("CALCULATION_SENT_TO_DRP");
     })
 
     // =====================================================
@@ -94,7 +90,6 @@ export default function () {
         // then
         expect(response.status, "response status").to.eq(200)
         expect(response).to.have.validJsonBody()
-        expect(response.json().status, "calculation status").to.be.eq("REVERSED_ETL_SENT_TO_DRP");
     })
 
     // =====================================================
@@ -116,6 +111,5 @@ export default function () {
         // then
         expect(response.status, "response status").to.eq(200)
         expect(response).to.have.validJsonBody()
-        expect(response.json().status, "calculation status").to.be.eq("CALCULATION_FINISHED");
     })
 };

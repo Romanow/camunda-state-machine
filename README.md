@@ -77,67 +77,7 @@ $ newman run -e local-environment.json collection.json
 
 ## Нагрузочное тестирование
 
-Запускаем локальный кластер k8s в docker (папка [`k8s`](k8s)):
-
-```shell
-$ kind create cluster --config kind.yml
-$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-```
-
-Загружаем docker images в кластер `kind` (папка [`scripts`](scripts)):
-
-```shell
-$ ./scripts/load-images.sh
-```
-
-Загружаем репозитории:
-
-```shell
-$ helm repo add romanow https://romanow.github.io/helm-charts/
-$ helm repo add deliveryhero https://charts.deliveryhero.io/
-$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-$ helm repo update
-```
-
-Устанавливаем инструменты для мониторинга кластера:
-
-```shell
-$ helm install kube-state-metrics prometheus-community/kube-state-metrics --set image.tag=v2.6.0 
-
-$ helm install prometheus -f prometheus/values.yaml romanow/prometheus
-
-$ helm install influxdb -f influxdb/values.yaml romanow/influxdb
-
-$ helm install grafana -f grafana/values.yaml romanow/grafana
-```
-
-Устанавливаем Camunda State Machine:
-
-```shell
-$ helm install postgres -f postgres/values.yaml romanow/postgres
-
-$ helm install camunda-state-machine -f camunda/values.yaml romanow/java-service
-
-$ kubectl create configmap services-stubs-mappings --from-file=../stubs/mappings
-$ kubectl create configmap services-stubs-files --from-file=../stubs/__files
-$ helm install wiremock -f wiremock/values.yaml deliveryhero/wiremock
-```
-
-Запускаем end-to-end тесты (папка [`tests/postman`](tests/postman)):
-
-```shell
-$ newman run -e kind-environment.json collection.json
-```
-
-Запускаем нагрузочное тестирование (папка [`tests/load`](tests/load)):
-
-```shell
-$ brew install k6
-$ k6 run \
-    --out influxdb=http://localhost:32086/k6 \
-    -e HOSTNAME=localhost:32080 \
-    k6-load.js
-```
+[Описание нагрузочного тестирования](load-testing.md)
 
 ### Технические вопросы
 

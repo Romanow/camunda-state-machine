@@ -14,6 +14,7 @@
       },
       "response": {
         "status": 200,
+        "fixedDelayMilliseconds": 200,
         "body": "\"9ee0fd40-77d7-4fb8-9ef2-2f1e56bb82cc\"",
         "headers": {
           "Content-Type": "application/json"
@@ -58,6 +59,7 @@
       },
       "response": {
         "status": 200,
+        "fixedDelayMilliseconds": 200,
         "body": "\"0a117ded-a9a4-4565-9ec7-f4b9f487c8c7\"",
         "headers": {
           "Content-Type": "application/json"
@@ -115,6 +117,7 @@
       },
       "response": {
         "status": 200,
+        "fixedDelayMilliseconds": 200,
         "body": "\"73fd39a5-5f6c-430b-afd8-c6908a8541f4\"",
         "headers": {
           "Content-Type": "application/json"
@@ -153,6 +156,7 @@
       },
       "response": {
         "status": 200,
+        "fixedDelayMilliseconds": 200,
         "body": "\"2f62fda9-e111-48e1-b8ff-cfba56231c16\"",
         "headers": {
           "Content-Type": "application/json"
@@ -190,6 +194,7 @@
       },
       "response": {
         "status": 200,
+        "fixedDelayMilliseconds": 200,
         "body": "{\n  \"etlTableList\": [\n    {\n      \"database\": \"cashflow\",\n      \"schema\": \"public\",\n      \"name\": \"data\"\n    }\n  ]\n}",
         "headers": {
           "Content-Type": "application/json"
@@ -230,6 +235,7 @@
       },
       "response": {
         "status": 200,
+        "fixedDelayMilliseconds": 200,
         "body": "{\n  \"etlTableList\": [\n    {\n      \"database\": \"cashflow\",\n      \"schema\": \"public\",\n      \"name\": \"data\"\n    }\n  ]\n}",
         "headers": {
           "Content-Type": "application/json"
@@ -270,6 +276,7 @@
       },
       "response": {
         "status": 200,
+        "fixedDelayMilliseconds": 200,
         "body": "{\n  \"etlTableList\": [\n    {\n      \"database\": \"cashflow\",\n      \"schema\": \"public\",\n      \"name\": \"data\"\n    }\n  ]\n}",
         "headers": {
           "Content-Type": "application/json"
